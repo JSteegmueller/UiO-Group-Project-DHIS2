@@ -1,6 +1,12 @@
 # Created by https://www.toptal.com/developers/gitignore/api/macos,node,react,linux,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,node,react,linux,windows
 
+# DHIS2 Platform
+node_modules
+.d2
+src/locales
+build
+
 ### Linux ###
 *~
 
@@ -227,5 +233,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+.idea
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,node,react,linux,windows
