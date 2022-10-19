@@ -1,31 +1,30 @@
-import React from 'react'
-import { DataQuery } from '@dhis2/app-runtime'
-import i18n from '@dhis2/d2-i18n'
-import classes from './App.module.css'
+import React from "react";
+import classes from "./App.module.css";
+import { useState } from "react";
 
-const query = {
-    me: {
-        resource: 'me',
-    },
+import { Navigation } from "./Navigation";
+
+function MyApp() {
+  const [activePage, setActivePage] = useState("Browse");
+
+  function activePageHandler(page) {
+    setActivePage(page);
+  }
+
+  return (
+    <div className={classes.container}>
+      <div className={classes.left}>
+        <Navigation
+          activePage={activePage}
+          activePageHandler={activePageHandler}
+        />
+      </div>
+      <div className={classes.right}>
+        {activePage === "Browse"}
+        {activePage === "Insert"}
+      </div>
+    </div>
+  );
 }
 
-const MyApp = () => (
-    <div className={classes.container}>
-        <DataQuery query={query}>
-            {({ error, loading, data }) => {
-                if (error) return <span>ERROR</span>
-                if (loading) return <span>...</span>
-                return (
-                    <>
-                        <h1>
-                            {i18n.t('Hello {{name}}', { name: data.me.name })}
-                        </h1>
-                        <h3>{i18n.t('Welcome to DHIS2!')}</h3>
-                    </>
-                )
-            }}
-        </DataQuery>
-    </div>
-)
-
-export default MyApp
+export default MyApp;
