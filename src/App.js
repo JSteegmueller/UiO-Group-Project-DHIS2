@@ -1,7 +1,7 @@
 import React from "react";
 import classes from "./App.module.css";
 import { useState } from "react";
-
+import { Browse } from "./Browse";
 import { Navigation } from "./Navigation";
 
 function MyApp() {
@@ -20,7 +20,7 @@ function MyApp() {
         />
       </div>
       <div className={classes.right}>
-        {activePage === "Browse"}
+        {activePage === "Browse" && <Browse />}
         {activePage === "Insert"}
       </div>
     </div>
