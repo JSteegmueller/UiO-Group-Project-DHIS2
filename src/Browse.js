@@ -11,9 +11,10 @@ import {
   CircularLoader,
 } from "@dhis2/ui";
 
-// Hard-coded values
+let date = new Date();
 let orgUnit = "Tht0fnjagHi";
-let period = "202010";
+let period = 202210;
+// let period = date.getFullYear().toString() + (date.getMonth() + 1);
 
 const request = {
   values: {
@@ -31,18 +32,18 @@ const request = {
         "id,name,dataSetElements[dataElement[id,name,categoryCombo[id,name,categoryOptionCombos[id,name]]]",
     },
   },
-  organization: {
-    resource: "/organisationUnits/".concat(orgUnit),
-    params: {
-      fields: "id,code,displayName,displayShortName,parent",
-    },
-  },
-  user: {
-    resource: "/me",
-    params: {
-      fields: "id,name,organisationUnits",
-    },
-  },
+  // organization: {
+  //   resource: "/organisationUnits/".concat(orgUnit),
+  //   params: {
+  //     fields: "id,code,displayName,displayShortName,parent",
+  //   },
+  // },
+  // user: {
+  //   resource: "/me",
+  //   params: {
+  //     fields: "id,name,organisationUnits",
+  //   },
+  // },
 };
 
 function mergeData(data) {
@@ -52,26 +53,35 @@ function mergeData(data) {
     rQLFnNXXIL0: "Balance",
   };
 
-  let merged = data.values.dataValues.map((value) => {
-    let match = data.commodities.dataSetElements.find((commodity) => {
+  let merged = data.commodities.dataSetElements.map((commodity) => {
+    let match = data.values.dataValues.find((value) => {
       return commodity.dataElement.id == value.dataElement;
     });
-    return {
-      name: match.dataElement.name.split(" - ")[1],
-      id: match.dataElement.id,
-      value: value.value,
-      category: categories[value.categoryOptionCombo],
-    };
+    if (match) {
+      return {
+        name: commodity.dataElement.name.split(" - ")[1],
+        id: commodity.dataElement.id,
+        value: match.value,
+        category: categories[match.categoryOptionCombo],
+      };
+    } else {
+      return {
+        name: commodity.dataElement.name.split(" - ")[1],
+        id: commodity.dataElement.id,
+      };
+    }
   });
 
   return merged.reduce(function (r, a) {
-    let empty = "n/a";
+    let empty = 0;
     r[a.name] = r[a.name] || {
       Consumption: empty,
       Order: empty,
       Balance: empty,
     };
-    r[a.name][a.category] = a.value;
+    if (a.category) {
+      r[a.name][a.category] = a.value;
+    }
     return r;
   }, Object.create(null));
 }
