@@ -3,6 +3,7 @@ import classes from "./App.module.css";
 import { useState } from "react";
 
 import { Navigation } from "./Navigation";
+import  ListOfOrganisations  from "./ListOfOrganisations";
 
 function MyApp() {
   const [activePage, setActivePage] = useState("Browse");
@@ -22,6 +23,7 @@ function MyApp() {
       <div className={classes.right}>
         {activePage === "Browse"}
         {activePage === "Insert"}
+        {activePage === "ListOfOrganisations" && <ListOfOrganisations />}
       </div>
     </div>
   );

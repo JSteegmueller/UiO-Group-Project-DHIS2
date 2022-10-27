@@ -14,6 +14,12 @@ export function Navigation(props) {
         active={props.activePage == "Insert"}
         onClick={() => props.activePageHandler("Insert")}
       />
+      <MenuItem
+        // Only for now! This menu point is going to delete late
+        label="List of organisations"
+        active={props.activePage == "ListOfOrganisations"}
+        onClick={() => props.activePageHandler("ListOfOrganisations")}
+      />
     </Menu>
   );
 }
