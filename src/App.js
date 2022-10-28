@@ -5,26 +5,26 @@ import { Browse } from "./Browse";
 import { Navigation } from "./Navigation";
 
 function MyApp() {
-  const [activePage, setActivePage] = useState("Browse");
+    const [activePage, setActivePage] = useState("Browse");
 
-  function activePageHandler(page) {
-    setActivePage(page);
-  }
+    function activePageHandler(page) {
+        setActivePage(page);
+    }
 
-  return (
-    <div className={classes.container}>
-      <div className={classes.left}>
-        <Navigation
-          activePage={activePage}
-          activePageHandler={activePageHandler}
-        />
-      </div>
-      <div className={classes.right}>
-        {activePage === "Browse" && <Browse />}
-        {activePage === "Insert"}
-      </div>
-    </div>
-  );
+    return (
+        <div className={classes.container}>
+            <div className={classes.left}>
+                <Navigation
+                    activePage={activePage}
+                    activePageHandler={activePageHandler}
+                />
+            </div>
+            <div className={classes.right}>
+                {activePage === "Browse" && <Browse />}
+                {activePage === "Insert"}
+            </div>
+        </div>
+    );
 }
 
 export default MyApp;
