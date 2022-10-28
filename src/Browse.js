@@ -1,4 +1,5 @@
 import React from "react";
+import { UpdateBalanceButton } from "./UpdateBalanceButton";
 import { useDataQuery } from "@dhis2/app-runtime";
 import {
   Table,
@@ -11,46 +12,52 @@ import {
   CircularLoader,
 } from "@dhis2/ui";
 
-let date = new Date();
 let orgUnit = "Tht0fnjagHi";
-let period = 202210;
-// let period = date.getFullYear().toString() + (date.getMonth() + 1);
+let dataSet = "ULowA8V3ucd";
+let date = new Date();
+let currentPeriod =
+  date.getFullYear().toString() + ("0" + (date.getMonth() + 1)).slice(-2);
 
 const request = {
   values: {
     resource: "/dataValueSets",
     params: {
-      dataSet: "ULowA8V3ucd",
       orgUnit: orgUnit,
-      period: period,
+      dataSet: dataSet,
+      period: currentPeriod,
+      fields: "dataValues[dataElement,categoryOptionCombo,value]",
     },
   },
   commodities: {
-    resource: "/dataSets/ULowA8V3ucd",
+    resource: "/dataSets",
+    id: dataSet,
     params: {
-      fields:
-        "id,name,dataSetElements[dataElement[id,name,categoryCombo[id,name,categoryOptionCombos[id,name]]]",
+      fields: "dataSetElements[dataElement[id,name]",
     },
   },
-  // organization: {
-  //   resource: "/organisationUnits/".concat(orgUnit),
-  //   params: {
-  //     fields: "id,code,displayName,displayShortName,parent",
-  //   },
-  // },
-  // user: {
-  //   resource: "/me",
-  //   params: {
-  //     fields: "id,name,organisationUnits",
-  //   },
-  // },
+  lastUpdated: {
+    resource: "/dataStore/IN5320-G3/lastUpdated",
+  },
+  organization: {
+    resource: "/organisationUnits",
+    id: orgUnit,
+    params: {
+      fields: "id,displayName",
+    },
+  },
+  user: {
+    resource: "/me",
+    params: {
+      fields: "id,name,organisationUnits",
+    },
+  },
 };
 
 function mergeData(data) {
   let categories = {
     J2Qf1jtZuj8: "Consumption",
-    KPP63zJPkOu: "Order",
     rQLFnNXXIL0: "Balance",
+    KPP63zJPkOu: "Order",
   };
 
   let merged = data.commodities.dataSetElements.map((commodity) => {
@@ -73,11 +80,10 @@ function mergeData(data) {
   });
 
   return merged.reduce(function (r, a) {
-    let empty = 0;
     r[a.name] = r[a.name] || {
-      Consumption: empty,
-      Order: empty,
-      Balance: empty,
+      Consumption: 0,
+      Balance: 0,
+      Order: 0,
     };
     if (a.category) {
       r[a.name][a.category] = a.value;
@@ -87,7 +93,7 @@ function mergeData(data) {
 }
 
 export function Browse() {
-  const { loading, error, data } = useDataQuery(request);
+  const { loading, error, data, refetch } = useDataQuery(request);
 
   if (error) {
     return <span>ERROR: {error.message}</span>;
@@ -98,30 +104,41 @@ export function Browse() {
   }
 
   if (data) {
-    let mergedData = mergeData(data);
     return (
-      <Table>
-        <TableHead>
-          <TableRowHead>
-            <TableCellHead>Commodity</TableCellHead>
-            <TableCellHead>Consumption</TableCellHead>
-            <TableCellHead>End balance</TableCellHead>
-            <TableCellHead>Quantity to be ordered</TableCellHead>
-          </TableRowHead>
-        </TableHead>
-        <TableBody>
-          {Object.entries(mergedData).map(([k, v]) => {
-            return (
-              <TableRow key={k}>
-                <TableCell>{k}</TableCell>
-                <TableCell>{v["Consumption"]}</TableCell>
-                <TableCell>{v["Balance"]}</TableCell>
-                <TableCell>{v["Order"]}</TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+      <div>
+        <p>User: {data.user.name}</p>
+        <p>Organization: {data.organization.displayName}</p>
+        <p>Table Month: {data.lastUpdated}</p>
+        <p>Current Month: {currentPeriod}</p>
+        {data.lastUpdated != currentPeriod && (
+          <UpdateBalanceButton
+            refetch={refetch}
+            currentPeriod={currentPeriod}
+          />
+        )}
+        <Table>
+          <TableHead>
+            <TableRowHead>
+              <TableCellHead>Commodity</TableCellHead>
+              <TableCellHead>Consumption</TableCellHead>
+              <TableCellHead>End balance</TableCellHead>
+              <TableCellHead>Quantity to be ordered</TableCellHead>
+            </TableRowHead>
+          </TableHead>
+          <TableBody>
+            {Object.entries(mergeData(data)).map(([k, v]) => {
+              return (
+                <TableRow key={k}>
+                  <TableCell>{k}</TableCell>
+                  <TableCell>{v["Consumption"]}</TableCell>
+                  <TableCell>{v["Balance"]}</TableCell>
+                  <TableCell>{v["Order"]}</TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
     );
   }
 }
