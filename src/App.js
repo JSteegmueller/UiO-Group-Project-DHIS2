@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import classes from "./App.module.css";
-import { useState } from "react";
-import { Browse } from "./Browse";
+import { Browse } from "./browse/Browse";
 import { Navigation } from "./Navigation";
+import Dispensing from "./dispensing/Dispensing";
 
 function MyApp() {
-    const [activePage, setActivePage] = useState("Browse");
+    const [activePage, setActivePage] = useState("Dispensing");
 
     function activePageHandler(page) {
         setActivePage(page);
@@ -20,8 +20,8 @@ function MyApp() {
                 />
             </div>
             <div className={classes.right}>
+                {activePage === "Dispensing" && <Dispensing />}
                 {activePage === "Browse" && <Browse />}
-                {activePage === "Insert"}
             </div>
         </div>
     );

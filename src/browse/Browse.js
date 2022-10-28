@@ -12,25 +12,26 @@ import {
     CircularLoader,
 } from "@dhis2/ui";
 
-let orgUnit = "Tht0fnjagHi";
-let dataSet = "ULowA8V3ucd";
 let date = new Date();
 let currentPeriod =
-    date.getFullYear().toString() + ("0" + (date.getMonth() + 1)).slice(-2);
+    date.getFullYear().toString() + ("0" + (date.getMonth() + 3)).slice(-2);
+date.setDate(0);
+let previousPeriod =
+    date.getFullYear().toString() + ("0" + (date.getMonth() + 3)).slice(-2);
 
 const request = {
     values: {
         resource: "/dataValueSets",
         params: {
-            orgUnit: orgUnit,
-            dataSet: dataSet,
+            orgUnit: process.env.REACT_APP_ORGUNIT,
+            dataSet: "ULowA8V3ucd",
             period: currentPeriod,
             fields: "dataValues[dataElement,categoryOptionCombo,value]",
         },
     },
     commodities: {
         resource: "/dataSets",
-        id: dataSet,
+        id: "ULowA8V3ucd",
         params: {
             fields: "dataSetElements[dataElement[id,name]",
         },
@@ -40,7 +41,7 @@ const request = {
     },
     organization: {
         resource: "/organisationUnits",
-        id: orgUnit,
+        id: process.env.REACT_APP_ORGUNIT,
         params: {
             fields: "id,displayName",
         },
@@ -114,6 +115,7 @@ export function Browse() {
                     <UpdateBalanceButton
                         refetch={refetch}
                         currentPeriod={currentPeriod}
+                        previousPeriod={previousPeriod}
                     />
                 )}
                 <Table>

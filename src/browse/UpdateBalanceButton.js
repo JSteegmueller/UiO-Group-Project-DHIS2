@@ -1,14 +1,7 @@
 import { useDataQuery, useDataMutation } from "@dhis2/app-runtime";
 import { CircularLoader, Button } from "@dhis2/ui";
 
-let orgUnit = "Tht0fnjagHi";
-let dataSet = "ULowA8V3ucd";
-let date = new Date();
-date.setDate(0);
-let previousPeriod =
-    date.getFullYear().toString() + ("0" + (date.getMonth() + 1)).slice(-2);
-
-const updateLastUpdated = {
+const mutateLastUpdated = {
     resource: "/dataStore/IN5320-G3/lastUpdated",
     data: ({ currentPeriod }) => currentPeriod,
     type: "update",
@@ -17,31 +10,38 @@ const updateLastUpdated = {
 const requestBalance = {
     previousValues: {
         resource: "/dataValueSets",
-        params: {
-            orgUnit: orgUnit,
-            dataSet: dataSet,
+        params: ({ previousPeriod }) => ({
+            orgUnit: process.env.REACT_APP_ORGUNIT,
+            dataSet: "ULowA8V3ucd",
             period: previousPeriod,
             fields: "dataValues[dataElement,categoryOptionCombo,value]",
-        },
+        }),
     },
 };
 
-const updateBalance = {
+const mutateBalance = {
     resource: "/dataValueSets",
-    dataSet: dataSet,
+    dataSet: "ULowA8V3ucd",
     data: ({ currentPeriod, updatedBalance }) => ({
-        orgUnit: orgUnit,
+        orgUnit: process.env.REACT_APP_ORGUNIT,
         period: currentPeriod,
         dataValues: updatedBalance,
     }),
     type: "create",
 };
 
-export const UpdateBalanceButton = ({ refetch, currentPeriod }) => {
-    const { loading, error, data } = useDataQuery(requestBalance);
-    const [mutateBalance, { loading1 }] = useDataMutation(updateBalance);
-    const [mutateLastUpdated, { loading2 }] =
-        useDataMutation(updateLastUpdated);
+export const UpdateBalanceButton = ({
+    refetch,
+    currentPeriod,
+    previousPeriod,
+}) => {
+    const { loading, error, data } = useDataQuery(requestBalance, {
+        variables: {
+            previousPeriod: previousPeriod,
+        },
+    });
+    const [mutateB, { loading1 }] = useDataMutation(mutateBalance);
+    const [mutateL, { loading2 }] = useDataMutation(mutateLastUpdated);
 
     if (error) {
         return <span>ERROR: {error.message}</span>;
@@ -61,11 +61,11 @@ export const UpdateBalanceButton = ({ refetch, currentPeriod }) => {
             }));
 
         const onClick = async () => {
-            await mutateBalance({
+            await mutateB({
                 currentPeriod: currentPeriod,
                 updatedBalance: updatedBalance,
             });
-            await mutateLastUpdated({
+            await mutateL({
                 currentPeriod: currentPeriod,
             });
             refetch();
