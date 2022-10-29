@@ -1,7 +1,6 @@
 import React from "react";
 import { useDataQuery } from "@dhis2/app-runtime";
 import FetchStockValuesOrg from "./FetchStockValuesOrg";
-import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -22,30 +21,10 @@ const dataQuery = {
     },
   },
 };
-const test = {
-  valueOfStock: {
-    resource: "dataValues",
-    params: ({ orgId }) => ({
-      de: commodityId,
-      pe: period,
-      ou: orgId,
-      co: co,
-    }),
-  },
-};
+
 
 function ListOfOrganisations() {
   const { loading, error, data } = useDataQuery(dataQuery);
-  const [orgIdArray, setOrgIdArray] = useState([]);
-
-  const orgId1 = "Tht0fnjagHi";
-  // const orgIdArray = [];
-
-  const valueOfStock = useDataQuery(test, {
-    variables: {
-      orgId: orgId1,
-    },
-  });
 
   if (error) {
     return <span>ERROR: {error.message}</span>;
@@ -57,20 +36,6 @@ function ListOfOrganisations() {
 
   if (data) {
     const organisationChildren = data.organisationList.children;
-    const zwischenspeicher = [];
-
-    for (let org of organisationChildren) {
-      valueOfStock.refetch({ orgId: org.id }).then((data, error) => {
-        if (data) {
-          zwischenspeicher.push({
-            name: org.name,
-            stock: data.valueOfStock,
-          });
-        }
-      });
-    }
-
-    setOrgIdArray(zwischenspeicher);
 
     return (
       <div>
@@ -83,13 +48,8 @@ function ListOfOrganisations() {
             </TableRowHead>
           </TableHead>
           <TableBody>
-            {orgIdArray.map(({ name, stock }, index) => {
-              return (
-                <TableRow key={index}>
-                  <TableCell>{name} </TableCell>
-                  <TableCell>{stock}</TableCell>
-                </TableRow>
-              );
+            {organisationChildren.map((orgData, index) => {
+              return <FetchStockValuesOrg orgData={orgData} index={index} />;
             })}
           </TableBody>
         </Table>
