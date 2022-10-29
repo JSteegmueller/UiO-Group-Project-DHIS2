@@ -88,3 +88,14 @@ const dataQuery = {
     },
   },*/
 };
+
+{
+    "": {
+        "resource": "dataValueSets",
+        "params": {
+            "dataSet": "ULowA8V3ucd",
+            "period": "202110",
+            "orgUnit":["RTixJpRqS4C", "xt08cuqf1ys", "AXZq6q7Dr6E"]
+        }
+    }
+}

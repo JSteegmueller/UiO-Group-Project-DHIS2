@@ -1,6 +1,5 @@
 import React from "react";
 import { useDataQuery } from "@dhis2/app-runtime";
-import FetchStockValuesOrg from "./FetchStockValuesOrg";
 import {
   Table,
   TableBody,
@@ -12,7 +11,7 @@ import {
   CircularLoader,
 } from "@dhis2/ui";
 
-const dataQuery = {
+const organisationUnits = {
   organisationList: {
     resource: "organisationUnits",
     id: "BGGmAwx33dj", // parentID from parentorganisation
@@ -22,9 +21,39 @@ const dataQuery = {
   },
 };
 
+const organisationUnitsValues = {
+  valueList: {
+    resource: "dataValueSets",
+    params: ({orgId}) => ({
+      dataSet: "ULowA8V3ucd",
+      period: "202110",
+      orgUnit: orgId
+    }),
+  },
+};
+
+function fetchingValueIdHelper(data) {
+  if (data) {
+    let organisationChildren = [];
+    for (let item of data.organisationList.children)
+      organisationChildren.push(item.id);
+
+    return organisationChildren;
+  }
+  return;
+}
 
 function ListOfOrganisations() {
-  const { loading, error, data } = useDataQuery(dataQuery);
+  const { loading, error, data } = useDataQuery(organisationUnits);
+  let organisationChildren = fetchingValueIdHelper(data);
+
+  const valueOfStock = useDataQuery(organisationUnitsValues, {
+    variables: {
+      orgId: organisationChildren,
+    },
+  });
+
+  console.log(valueOfStock);
 
   if (error) {
     return <span>ERROR: {error.message}</span>;
@@ -35,8 +64,6 @@ function ListOfOrganisations() {
   }
 
   if (data) {
-    const organisationChildren = data.organisationList.children;
-
     return (
       <div>
         <h1>List of available commodity stock in other organisations</h1>
@@ -47,15 +74,20 @@ function ListOfOrganisations() {
               <TableCellHead>Amount of avialable stock</TableCellHead>
             </TableRowHead>
           </TableHead>
-          <TableBody>
-            {organisationChildren.map((orgData, index) => {
-              return <FetchStockValuesOrg orgData={orgData} index={index} />;
-            })}
-          </TableBody>
+          <TableBody></TableBody>
         </Table>
       </div>
     );
   }
 }
+/*
+           {orgIdArray.map(({ name, stock }, index) => {
+              return (
+                <TableRow key={index}>
+                  <TableCell>{name} </TableCell>
+                  <TableCell>{stock}</TableCell>
+                </TableRow>
+              );
+            })}*/
 
 export default ListOfOrganisations;
