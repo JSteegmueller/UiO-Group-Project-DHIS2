@@ -1,6 +1,7 @@
 import React from "react";
-import { useState } from "react";
 import { useDataQuery } from "@dhis2/app-runtime";
+import FetchStockValuesOrg from "./FetchStockValuesOrg";
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -12,78 +13,39 @@ import {
   CircularLoader,
 } from "@dhis2/ui";
 
-// Data query set
 const dataQuery = {
-  //data
+  organisationList: {
+    resource: "organisationUnits",
+    id: "BGGmAwx33dj", // parentID from parentorganisation
+    params: {
+      fields: ["name", "id", "children[name,id]"],
+    },
+  },
 };
-/* Queries
-Get dataset based on Commodity which is send with request
-{
-    "": {
-        "resource": "dataSets",
-        "id": "ULowA8V3ucd",
-        "params": {
-            "fields": [
-                "dataSetElements[dataElement[id, name,categoryCombo[categoryOptionCombos[id]]]"
-            ]
-        }
-    }
-}
-Get organisations and save in list
-{
-    "": {
-        "resource": "organisationUnits",
-        "id": "BGGmAwx33dj", // Our organisation
-        "params": {
-            "fields": [
-                "id",
-                "name",
-                "children[name,id]"
-            ]
-        }
-    }
-}
-// Get values -- end balance etc
-{
-    "": {
-        "resource": "dataValues",
-        "id": "BGGmAwx33dj",
-        "params": {
-            "de": "W1XtQhP6BGd",
-            "ou": "Tht0fnjagHi",
-            "pe": "202110",
-            "co": "KPP63zJPkOu"
-        }
-    }
-}
-*/
-
-function mergeData(data) {
-  return data.dataSets.dataSetElements.map((d) => {
-    let matchedValue = data.dataValueSets.dataValues.find((dataValues) => {
-      if (dataValues.dataElement == d.dataElement.id) {
-        return true;
-      }
-    });
-
-    return {
-      displayName: d.dataElement.displayName,
-      id: d.dataElement.id,
-      value: matchedValue.value,
-    };
-  });
-}
+const test = {
+  valueOfStock: {
+    resource: "dataValues",
+    params: ({ orgId }) => ({
+      de: commodityId,
+      pe: period,
+      ou: orgId,
+      co: co,
+    }),
+  },
+};
 
 function ListOfOrganisations() {
   const { loading, error, data } = useDataQuery(dataQuery);
-  const [requestDataItem, setRequestDataItem] = useState(); // Requested data item
-  const [activePage, setActivePage] = useState(); // set active state to active table
+  const [orgIdArray, setOrgIdArray] = useState([]);
 
-  // On click changes request data based on id
-  const onClick = function (item) {
-    setRequestDataItem(item);
-    setActivePage(item.displayName);
-  };
+  const orgId1 = "Tht0fnjagHi";
+  // const orgIdArray = [];
+
+  const valueOfStock = useDataQuery(test, {
+    variables: {
+      orgId: orgId1,
+    },
+  });
 
   if (error) {
     return <span>ERROR: {error.message}</span>;
@@ -94,7 +56,22 @@ function ListOfOrganisations() {
   }
 
   if (data) {
-    console.log(mergeData(data));
+    const organisationChildren = data.organisationList.children;
+    const zwischenspeicher = [];
+
+    for (let org of organisationChildren) {
+      valueOfStock.refetch({ orgId: org.id }).then((data, error) => {
+        if (data) {
+          zwischenspeicher.push({
+            name: org.name,
+            stock: data.valueOfStock,
+          });
+        }
+      });
+    }
+
+    setOrgIdArray(zwischenspeicher);
+
     return (
       <div>
         <h1>List of available commodity stock in other organisations</h1>
@@ -103,17 +80,17 @@ function ListOfOrganisations() {
             <TableRowHead>
               <TableCellHead>Organisation</TableCellHead>
               <TableCellHead>Amount of avialable stock</TableCellHead>
-              <TableCellHead>Distance/Place(?)</TableCellHead>
-              <TableCellHead>Phone(?)</TableCellHead>
             </TableRowHead>
           </TableHead>
           <TableBody>
-            <TableRow /*key={props.values.id}*/>
-              <TableCell>Dummy 1</TableCell>
-              <TableCell>Dummy 2</TableCell>
-              <TableCell>Dummy 3</TableCell>
-              <TableCell>Dummy 4</TableCell>
-            </TableRow>
+            {orgIdArray.map(({ name, stock }, index) => {
+              return (
+                <TableRow key={index}>
+                  <TableCell>{name} </TableCell>
+                  <TableCell>{stock}</TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>
