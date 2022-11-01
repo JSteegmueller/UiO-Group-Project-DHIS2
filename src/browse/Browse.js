@@ -1,23 +1,15 @@
 import React from "react";
+import StockTable from "./StockTable";
 import { UpdateBalanceButton } from "./UpdateBalanceButton";
 import { useDataQuery } from "@dhis2/app-runtime";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableCellHead,
-    TableHead,
-    TableRow,
-    TableRowHead,
-    CircularLoader,
-} from "@dhis2/ui";
+import { CircularLoader } from "@dhis2/ui";
 
-let date = new Date();
-let currentPeriod =
-    date.getFullYear().toString() + ("0" + (date.getMonth() + 3)).slice(-2);
-date.setDate(0);
-let previousPeriod =
-    date.getFullYear().toString() + ("0" + (date.getMonth() + 3)).slice(-2);
+const date = new Date();
+const pDate = new Date(date);
+pDate.setDate(0);
+const nextRestock = getTimeDiff(date);
+const currentPeriod = getPeriod(date);
+const previousPeriod = getPeriod(pDate);
 
 const request = {
     values: {
@@ -54,43 +46,21 @@ const request = {
     },
 };
 
-function mergeData(data) {
-    let categories = {
-        J2Qf1jtZuj8: "Consumption",
-        rQLFnNXXIL0: "Balance",
-        KPP63zJPkOu: "Order",
-    };
+function getPeriod(date) {
+    return (
+        date.getFullYear().toString() + ("0" + (date.getMonth() + 1)).slice(-2)
+    );
+}
 
-    let merged = data.commodities.dataSetElements.map((commodity) => {
-        let match = data.values.dataValues.find((value) => {
-            return commodity.dataElement.id == value.dataElement;
-        });
-        if (match) {
-            return {
-                name: commodity.dataElement.name.split(" - ")[1],
-                id: commodity.dataElement.id,
-                value: match.value,
-                category: categories[match.categoryOptionCombo],
-            };
-        } else {
-            return {
-                name: commodity.dataElement.name.split(" - ")[1],
-                id: commodity.dataElement.id,
-            };
-        }
-    });
-
-    return merged.reduce(function (r, a) {
-        r[a.name] = r[a.name] || {
-            Consumption: 0,
-            Balance: 0,
-            Order: 0,
-        };
-        if (a.category) {
-            r[a.name][a.category] = a.value;
-        }
-        return r;
-    }, Object.create(null));
+function getTimeDiff(date) {
+    const cDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const nDate = new Date(
+        date.getFullYear(),
+        date.getMonth() + (date.getDate() < 15 ? 0 : 1),
+        14
+    );
+    const oneDay = 24 * 60 * 60 * 1000;
+    return Math.round(Math.abs((cDate - nDate) / oneDay));
 }
 
 export function Browse() {
@@ -111,6 +81,8 @@ export function Browse() {
                 <p>Organization: {data.organization.displayName}</p>
                 <p>Table Month: {data.lastUpdated}</p>
                 <p>Current Month: {currentPeriod}</p>
+                <p>Current Date: {date.toJSON().split("T")[0]}</p>
+                <p>Days until next restock: {nextRestock}</p>
                 {data.lastUpdated != currentPeriod && (
                     <UpdateBalanceButton
                         refetch={refetch}
@@ -118,30 +90,7 @@ export function Browse() {
                         previousPeriod={previousPeriod}
                     />
                 )}
-                <Table>
-                    <TableHead>
-                        <TableRowHead>
-                            <TableCellHead>Commodity</TableCellHead>
-                            <TableCellHead>Consumption</TableCellHead>
-                            <TableCellHead>End balance</TableCellHead>
-                            <TableCellHead>
-                                Quantity to be ordered
-                            </TableCellHead>
-                        </TableRowHead>
-                    </TableHead>
-                    <TableBody>
-                        {Object.entries(mergeData(data)).map(([k, v]) => {
-                            return (
-                                <TableRow key={k}>
-                                    <TableCell>{k}</TableCell>
-                                    <TableCell>{v["Consumption"]}</TableCell>
-                                    <TableCell>{v["Balance"]}</TableCell>
-                                    <TableCell>{v["Order"]}</TableCell>
-                                </TableRow>
-                            );
-                        })}
-                    </TableBody>
-                </Table>
+                <StockTable data={data} />
             </div>
         );
     }

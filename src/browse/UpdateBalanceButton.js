@@ -1,12 +1,6 @@
 import { useDataQuery, useDataMutation } from "@dhis2/app-runtime";
 import { CircularLoader, Button } from "@dhis2/ui";
 
-const mutateLastUpdated = {
-    resource: "/dataStore/IN5320-G3/lastUpdated",
-    data: ({ currentPeriod }) => currentPeriod,
-    type: "update",
-};
-
 const requestBalance = {
     previousValues: {
         resource: "/dataValueSets",
@@ -17,6 +11,12 @@ const requestBalance = {
             fields: "dataValues[dataElement,categoryOptionCombo,value]",
         }),
     },
+};
+
+const mutateLastUpdated = {
+    resource: "/dataStore/IN5320-G3/lastUpdated",
+    data: ({ currentPeriod }) => currentPeriod,
+    type: "update",
 };
 
 const mutateBalance = {
@@ -52,7 +52,8 @@ export const UpdateBalanceButton = ({
     }
 
     if (data) {
-        let updatedBalance = data.previousValues.dataValues
+        // Replace all balance values with values of the previous period.
+        const updatedBalance = data.previousValues.dataValues
             .filter((i) => i.categoryOptionCombo == "rQLFnNXXIL0")
             .map((i) => ({
                 dataElement: i.dataElement,
