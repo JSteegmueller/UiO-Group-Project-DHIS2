@@ -1,5 +1,5 @@
 import React from "react";
-import StockTable from "./StockTable";
+import { StockTable } from "./StockTable";
 import { UpdateBalanceButton } from "./UpdateBalanceButton";
 import { useDataQuery } from "@dhis2/app-runtime";
 import { CircularLoader } from "@dhis2/ui";

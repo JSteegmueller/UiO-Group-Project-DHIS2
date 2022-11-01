@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import { SearchBar } from "./SearchBar";
 import {
     Button,
-    InputField,
     Table,
     TableBody,
     TableCell,
@@ -50,43 +50,15 @@ function mergeData(data) {
     }, Object.create(null));
 }
 
-function StockTable({ data }) {
+export function StockTable({ data }) {
     const fullTable = mergeData(data);
     const [tableData, setTableData] = useState(fullTable);
-    const [inputText, setInputText] = useState("");
-    function enterKeyHandler(e) {
-        if (e.key === "Enter") searchHandler();
-    }
-    function deleteHandler() {
-        setInputText("");
-        setTableData(fullTable);
-    }
-    function searchHandler() {
-        setTableData(
-            Object.fromEntries(
-                Object.entries(fullTable).filter(([k, _]) =>
-                    k.toLowerCase().includes(inputText.toLowerCase())
-                )
-            )
-        );
-    }
-    function tempHandler() {
-        console.log("Pressed TEMP button");
+    function handler() {
+        console.log("Pressed the REQUEST COMMODITY button");
     }
     return (
-        <div onKeyUp={enterKeyHandler}>
-            <InputField
-                name="searchInput"
-                placeholder="Search commodities"
-                value={inputText}
-                onChange={(input) => setInputText(input.value)}
-            />
-            <Button primary small onClick={searchHandler}>
-                Search
-            </Button>
-            <Button destructive small onClick={deleteHandler}>
-                Delete
-            </Button>
+        <div>
+            <SearchBar fullTable={fullTable} setTableData={setTableData} />
             <Table>
                 <TableHead>
                     <TableRowHead>
@@ -106,8 +78,8 @@ function StockTable({ data }) {
                                 <TableCell>{v["Balance"]}</TableCell>
                                 <TableCell>{v["Order"]}</TableCell>
                                 <TableCell>
-                                    <Button primary small onClick={tempHandler}>
-                                        temp
+                                    <Button primary small onClick={handler}>
+                                        Request commodity
                                     </Button>
                                 </TableCell>
                             </TableRow>
@@ -118,5 +90,3 @@ function StockTable({ data }) {
         </div>
     );
 }
-
-export default StockTable;

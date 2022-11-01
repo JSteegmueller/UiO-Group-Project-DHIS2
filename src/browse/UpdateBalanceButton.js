@@ -30,11 +30,11 @@ const mutateBalance = {
     type: "create",
 };
 
-export const UpdateBalanceButton = ({
+export function UpdateBalanceButton({
     refetch,
     currentPeriod,
     previousPeriod,
-}) => {
+}) {
     const { loading, error, data } = useDataQuery(requestBalance, {
         variables: {
             previousPeriod: previousPeriod,
@@ -83,4 +83,4 @@ export const UpdateBalanceButton = ({
             </Button>
         );
     }
-};
+}
