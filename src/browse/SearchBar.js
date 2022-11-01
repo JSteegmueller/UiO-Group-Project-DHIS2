@@ -13,11 +13,7 @@ export function SearchBar({ fullTable, setTableData }) {
     }
     function searchHandler() {
         setTableData(
-            Object.fromEntries(
-                Object.entries(fullTable).filter(([k, _]) =>
-                    k.toLowerCase().includes(inputText.toLowerCase())
-                )
-            )
+            fullTable.filter(([k, _]) => k.toLowerCase().includes(inputText.toLowerCase()))
         );
     }
     return (
