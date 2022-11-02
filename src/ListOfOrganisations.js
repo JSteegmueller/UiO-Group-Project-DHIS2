@@ -42,21 +42,20 @@ const organisationUnitsValues = {
 
 // Fetches all the necessary data from the organisation
 function fetchingOrgDataHelper(data) {
-  let organisationChildren = [];
-  let organisationChildrensAll = [];
+  let organisationIds = [];
+  let organisationData = [];
   if (data) {
     for (let item of data.organisationList.children)
       if (orgUnitId !== item.id) {
-        organisationChildren.push(item.id);
-        organisationChildrensAll.push({
+        organisationIds.push(item.id);
+        organisationData.push({
           orgUnitName: item.name,
           orgUnitId: item.id,
         });
       }
-
-    return { organisationChildren, organisationChildrensAll };
+    return { organisationIds, organisationData };
   }
-  return { organisationChildren, organisationChildrensAll };
+  return { organisationIds, organisationData };
 }
 
 // Fetches all the necessary data from the value and collect it in one result list
@@ -97,10 +96,7 @@ function fetchingValueDataHelper(
 // Later call function via requestedCommodity
 function ListOfOrganisations(/*requestedCommodity*/) {
   const { loading, error, data } = useDataQuery(organisationUnits);
-  let organisationIds = data
-    ? fetchingOrgDataHelper(data).organisationChildren
-    : [];
-
+  let organisationIds = fetchingOrgDataHelper(data).organisationIds;
   // Delete this line after call was setup
   const requestedCommodity = "dY4OCwl0Y7Y";
 
@@ -119,23 +115,12 @@ function ListOfOrganisations(/*requestedCommodity*/) {
   }
 
   if (data) {
-    let organisationData =
-      typeof fetchingOrgDataHelper(data).organisationChildrensAll ===
-      "undefined"
-        ? []
-        : fetchingOrgDataHelper(data).organisationChildrensAll;
-    const result =
-      typeof fetchingValueDataHelper(
-        valueOfStock,
-        requestedCommodity,
-        organisationData
-      ) === "undefined"
-        ? []
-        : fetchingValueDataHelper(
-            valueOfStock,
-            requestedCommodity,
-            organisationData
-          );
+    let organisationData = fetchingOrgDataHelper(data).organisationData;
+    const result = fetchingValueDataHelper(
+      valueOfStock,
+      requestedCommodity,
+      organisationData
+    );
 
     return (
       <div>
