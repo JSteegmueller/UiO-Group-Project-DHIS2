@@ -94,18 +94,21 @@ function fetchingValueDataHelper(
 }
 
 // Later call function via requestedCommodity
-function ListOfOrganisations(/*requestedCommodity*/) {
+function ListOfOrganisations(/*requestedCommodityId, requestedCommodityName*/) {
   const { loading, error, data } = useDataQuery(organisationUnits);
   let organisationIds = fetchingOrgDataHelper(data).organisationIds;
-  // Delete this line after call was setup
-  const requestedCommodity = "dY4OCwl0Y7Y";
 
+  // Delete this 2 lines after call was setup
+  const requestedCommodity = "W1XtQhP6BGd";
+  const requestedCommodityName = "Commodities - Resuscitation Equipment";
+
+  // ToDo: refetch this part in the first place
   const valueOfStock = useDataQuery(organisationUnitsValues, {
     variables: {
       orgId: organisationIds,
     },
   });
-
+  
   if (error) {
     return <span>ERROR: {error.message}</span>;
   }
@@ -124,7 +127,8 @@ function ListOfOrganisations(/*requestedCommodity*/) {
 
     return (
       <div>
-        <h1>List of available commodity stock in other organisations</h1>
+        <h1>List of available stock in other organisations</h1>
+        <h2>{requestedCommodityName}</h2>
         <Table>
           <TableHead>
             <TableRowHead>
