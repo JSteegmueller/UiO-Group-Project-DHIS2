@@ -1,14 +1,10 @@
 import React from "react";
 import { useDataQuery } from "@dhis2/app-runtime";
 import {
-  Table,
   TableBody,
-  TableCell,
-  TableCellHead,
-  TableHead,
-  TableRow,
-  TableRowHead,
   CircularLoader,
+  DataTableCell,
+  DataTableRow,
 } from "@dhis2/ui";
 
 const orgUnitId = "Tht0fnjagHi";
@@ -40,8 +36,8 @@ const organisationUnitsValues = {
   },
 };
 
-// Fetches all the necessary data from the organisation
-function fetchingOrgDataHelper(data) {
+// Collects all the necessary data about organisations based on the organisationId
+function collectingOrgDataHelper(data) {
   let organisationIds = [];
   let organisationData = [];
   if (data) {
@@ -58,10 +54,10 @@ function fetchingOrgDataHelper(data) {
   return { organisationIds, organisationData };
 }
 
-// Fetches all the necessary data from the value and collect it in one result list
-function fetchingValueDataHelper(
+// Collect all the necessary data from the commodity and collect it in one result list including organisation name and commodity
+function collectingDataHelper(
   valueOfStock,
-  requestedCommodity,
+  requestedCommodityId,
   organisationData
 ) {
   let result = [];
@@ -72,19 +68,20 @@ function fetchingValueDataHelper(
     for (let item of dataValues) {
       if (
         item.categoryOptionCombo === categoryOptionComboEndBalance &&
-        item.dataElement === requestedCommodity
+        item.dataElement === requestedCommodityId
       ) {
         collectValues.push({
           orgUnitId: item.orgUnit,
-          value: item.value,
+          stock: item.value,
         });
       }
     }
 
-    result = collectValues.map((values) => ({
-      ...values,
+    // Map amount of stock and ogansiation name based on Organisation Id
+    result = collectValues.map((stocks) => ({
+      ...stocks,
       ...organisationData.find(
-        (organisationName) => organisationName.orgUnitId === values.orgUnitId
+        (organisationName) => organisationName.orgUnitId === stocks.orgUnitId
       ),
     }));
 
@@ -93,14 +90,25 @@ function fetchingValueDataHelper(
   return result;
 }
 
-// Later call function via requestedCommodity
-function ListOfOrganisations(/*requestedCommodityId, requestedCommodityName*/) {
-  const { loading, error, data } = useDataQuery(organisationUnits);
-  let organisationIds = fetchingOrgDataHelper(data).organisationIds;
+// Sort data result and change sorting on click
+function sort(result, sortResult) {
+  const sortedResult = result;
+  console.log(sortResult);
+  if (sortResult.sort === "stock" && sortResult.sortDirection) {
+    sortedResult.sort((a, b) => b.stock - a.stock);
+  } else if (sortResult.sort === "stock" && !sortResult.sortDirection) {
+    sortedResult.sort((a, b) => a.stock - b.stock);
+  } else if (sortResult.sort === "organisation" && sortResult.sortDirection) {
+    sortedResult.sort((a, b) => a.orgUnitName.localeCompare(b.orgUnitName));
+  } else if (sortResult.sort === "organisation" && !sortResult.sortDirection) {
+    sortedResult.sort((a, b) => b.orgUnitName.localeCompare(a.orgUnitName));
+  }
+  return sortedResult;
+}
 
-  // Delete this 2 lines after call was setup
-  const requestedCommodity = "W1XtQhP6BGd";
-  const requestedCommodityName = "Commodities - Resuscitation Equipment";
+function RequestCommodityTable({ requestedCommodityId, sortResult }) {
+  const { loading, error, data } = useDataQuery(organisationUnits);
+  let organisationIds = collectingOrgDataHelper(data).organisationIds;
 
   // ToDo: refetch this part in the first place
   const valueOfStock = useDataQuery(organisationUnitsValues, {
@@ -108,7 +116,7 @@ function ListOfOrganisations(/*requestedCommodityId, requestedCommodityName*/) {
       orgId: organisationIds,
     },
   });
-  
+
   if (error) {
     return <span>ERROR: {error.message}</span>;
   }
@@ -118,38 +126,27 @@ function ListOfOrganisations(/*requestedCommodityId, requestedCommodityName*/) {
   }
 
   if (data) {
-    let organisationData = fetchingOrgDataHelper(data).organisationData;
-    const result = fetchingValueDataHelper(
+    const result = collectingDataHelper(
       valueOfStock,
-      requestedCommodity,
-      organisationData
+      requestedCommodityId,
+      collectingOrgDataHelper(data).organisationData
     );
 
+    const sortedResult = sort(result, sortResult);
+
     return (
-      <div>
-        <h1>List of available stock in other organisations</h1>
-        <h2>{requestedCommodityName}</h2>
-        <Table>
-          <TableHead>
-            <TableRowHead>
-              <TableCellHead>Organisation</TableCellHead>
-              <TableCellHead>Amount of avialable stock</TableCellHead>
-            </TableRowHead>
-          </TableHead>
-          <TableBody>
-            {result.map(({ orgUnitName, value }, index) => {
-              return (
-                <TableRow key={index}>
-                  <TableCell>{orgUnitName} </TableCell>
-                  <TableCell>{value}</TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </div>
+      <TableBody>
+        {sortedResult.map(({ orgUnitName, stock }, index) => {
+          return (
+            <DataTableRow key={index}>
+              <DataTableCell>{orgUnitName}</DataTableCell>
+              <DataTableCell>{stock}</DataTableCell>
+            </DataTableRow>
+          );
+        })}
+      </TableBody>
     );
   }
 }
 
-export default ListOfOrganisations;
+export default RequestCommodityTable;

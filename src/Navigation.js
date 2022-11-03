@@ -16,9 +16,9 @@ export function Navigation(props) {
       />
       <MenuItem
         // Only for now! This menu point is going to delete late
-        label="List of organisations"
-        active={props.activePage == "ListOfOrganisations"}
-        onClick={() => props.activePageHandler("ListOfOrganisations")}
+        label="Request Commodities"
+        active={props.activePage == "RequestCommodities"}
+        onClick={() => props.activePageHandler("RequestCommodities")}
       />
     </Menu>
   );
