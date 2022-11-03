@@ -5,14 +5,14 @@ export function Navigation(props) {
   return (
     <Menu>
       <MenuItem
+        label="Restock"
+        active={props.activePage == "Restock"}
+        onClick={() => props.activePageHandler("Restock")}
+      />
+      <MenuItem
         label="Browse"
         active={props.activePage == "Browse"}
         onClick={() => props.activePageHandler("Browse")}
-      />
-      <MenuItem
-        label="Insert"
-        active={props.activePage == "Insert"}
-        onClick={() => props.activePageHandler("Insert")}
       />
     </Menu>
   );

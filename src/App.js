@@ -3,9 +3,10 @@ import classes from "./App.module.css";
 import { useState } from "react";
 
 import { Navigation } from "./Navigation";
+import { Restock } from "./restock/Restock";
 
 function MyApp() {
-  const [activePage, setActivePage] = useState("Browse");
+  const [activePage, setActivePage] = useState("Restock");
 
   function activePageHandler(page) {
     setActivePage(page);
@@ -20,8 +21,8 @@ function MyApp() {
         />
       </div>
       <div className={classes.right}>
+        {activePage === "Restock" && <Restock />}
         {activePage === "Browse"}
-        {activePage === "Insert"}
       </div>
     </div>
   );

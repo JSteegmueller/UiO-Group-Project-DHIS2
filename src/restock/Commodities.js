@@ -50,6 +50,7 @@ export function Commodities({data}) {
                                 <TableCell>
                                   <p>{amount} packs added</p>
                                 </TableCell>
+                                <TableCell></TableCell>
                             </TableRow>
                         )
                     })}

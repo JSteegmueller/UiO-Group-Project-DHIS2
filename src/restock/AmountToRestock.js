@@ -22,7 +22,7 @@ function AmountToRestock({ setAmount }) {
             value={inputText}
             onChange={(input) => setInputText(input.value)}
         />
-        <Button primary small onClick={handleClick}>Restock</Button>
+        <Button primary small onClick={handleClick}>Confirm</Button>
     </div>
   );
 }
