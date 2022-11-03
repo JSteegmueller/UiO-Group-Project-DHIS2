@@ -93,7 +93,6 @@ function collectingDataHelper(
 // Sort data result and change sorting on click
 function sort(result, sortResult) {
   const sortedResult = result;
-  console.log(sortResult);
   if (sortResult.sort === "stock" && sortResult.sortDirection) {
     sortedResult.sort((a, b) => b.stock - a.stock);
   } else if (sortResult.sort === "stock" && !sortResult.sortDirection) {

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import RequestCommodityTable from "./RequestCommodityTable";
+import RequestCommoditySearchbar from "./RequestCommoditySearchbar";
+
 import {
   TableHead,
   DataTableRow,
@@ -7,16 +9,19 @@ import {
   DataTable,
 } from "@dhis2/ui";
 
-function RequestCommodities(/*requestedCommodityId, requestedCommodityName*/) {
+function RequestCommodity(/*requestedCommodityId, requestedCommodityName*/) {
   
   // Delete this 2 lines after call was setup
   const requestedCommodityId = "W1XtQhP6BGd";
   const requestedCommodityName = "Commodities - Resuscitation Equipment";
-  
-  const [sortResult, setSortResult] = useState({
-    sort: "stock",
-    sortDirection: true,
-  });
+  const [searchQuery, setSearchQuery] = useState(); // Default = No search query
+
+  const [sortResult, setSortResult] = useState({ sort: "stock", sortDirection: true });
+
+  // Setup recall function for searchqueries
+  function receiveSearchQuery(newSearchQuery) {
+    setSearchQuery(newSearchQuery);
+  }
 
   // Sort table on click according to ASC or DESC
   function onClickSorting(event) {
@@ -35,6 +40,7 @@ function RequestCommodities(/*requestedCommodityId, requestedCommodityName*/) {
     <div>
       <h1>List of available stock in other organisations</h1>
       <h2>{requestedCommodityName}</h2>
+      <RequestCommoditySearchbar receiveSearchQuery={receiveSearchQuery} />
       <DataTable>
         <TableHead>
           <DataTableRow>
@@ -52,4 +58,4 @@ function RequestCommodities(/*requestedCommodityId, requestedCommodityName*/) {
   );
 }
 
-export default RequestCommodities;
+export default RequestCommodity;
