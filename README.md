@@ -4,6 +4,11 @@ This project was bootstrapped with [DHIS2 Application Platform](https://github.c
 
 In the project directory, you can run:
 
+### `npx dhis-portal --target=https://data.research.dhis2.org/in5320/`
+
+Portal from local-host to server (http://localhost:9999)
+Login: 'admin' - 'district'
+
 ### `yarn start`
 
 Runs the app in the development mode.<br />
