@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDataQuery } from "@dhis2/app-runtime";
+import RequestCommoditySearchbar from "./RequestCommoditySearchbar";
 import {
+  TableHead,
+  DataTableRow,
   TableBody,
   CircularLoader,
   DataTableCell,
-  DataTableRow,
+  DataTableColumnHeader,
+  DataTable,
 } from "@dhis2/ui";
 
 const lifeCommodities = "ULowA8V3ucd";
@@ -77,17 +81,42 @@ function sort(result, sortResult) {
 
 function RequestCommodityTable({
   requestedCommodityId,
-  sortResult,
   organisationIds,
   organisationData,
 }) {
-
   const { loading, error, data } = useDataQuery(organisationUnitsValues, {
     variables: {
       orgId: organisationIds,
     },
   });
-  
+
+  const [sortResult, setSortResult] = useState({
+    sort: "stock",
+    sortDirection: true,
+  });
+
+  // Sort table on click according to ASC or DESC
+  function onClickSorting(event) {
+    if (sortResult.sort === event.name) {
+      setSortResult({
+        sort: event.name,
+        sortDirection: !sortResult.sortDirection,
+      });
+    } else if (sortResult.sort !== event.name) {
+      if (sortResult.sortDirection) {
+        setSortResult({
+          sort: event.name,
+          sortDirection: !sortResult.sortDirection,
+        });
+      } else if (!sortResult.sortDirection) {
+        setSortResult({
+          sort: event.name,
+          sortDirection: sortResult.sortDirection,
+        });
+      }
+    }
+  }
+
   if (error) {
     return <span>ERROR: {error.message}</span>;
   }
@@ -106,16 +135,41 @@ function RequestCommodityTable({
     const sortedResult = sort(result, sortResult);
 
     return (
-      <TableBody>
-        {sortedResult.map(({ orgUnitName, stock }, index) => {
-          return (
-            <DataTableRow key={index}>
-              <DataTableCell>{orgUnitName}</DataTableCell>
-              <DataTableCell>{stock}</DataTableCell>
+      <div>
+        <RequestCommoditySearchbar receiveSearchQuery={"receiveSearchQuery"} />
+        <DataTable>
+          <TableHead>
+            <DataTableRow>
+              <DataTableColumnHeader
+                name="organisation"
+                onSortIconClick={onClickSorting}
+                sortDirection="default"
+                sortIconTitle="Sort by organisation"
+              >
+                Organisation
+              </DataTableColumnHeader>
+              <DataTableColumnHeader
+                name="stock"
+                onSortIconClick={onClickSorting}
+                sortDirection="default"
+                sortIconTitle="Sort by stock"
+              >
+                Amount of avialable stock
+              </DataTableColumnHeader>
             </DataTableRow>
-          );
-        })}
-      </TableBody>
+          </TableHead>
+          <TableBody>
+            {sortedResult.map(({ orgUnitName, stock }, index) => {
+              return (
+                <DataTableRow key={index}>
+                  <DataTableCell>{orgUnitName}</DataTableCell>
+                  <DataTableCell>{stock}</DataTableCell>
+                </DataTableRow>
+              );
+            })}
+          </TableBody>
+        </DataTable>
+      </div>
     );
   }
 }
