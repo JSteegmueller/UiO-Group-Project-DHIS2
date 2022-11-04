@@ -7,21 +7,9 @@ import {
   DataTableRow,
 } from "@dhis2/ui";
 
-const orgUnitId = "Tht0fnjagHi";
 const lifeCommodities = "ULowA8V3ucd";
 const period = "202110";
 const categoryOptionComboEndBalance = "J2Qf1jtZuj8";
-
-// Fetching organisation unit ID's
-const organisationUnits = {
-  organisationList: {
-    resource: "organisationUnits",
-    id: "BGGmAwx33dj", // parentID from parentorganisation
-    params: {
-      fields: ["name", "id", "children[name,id]"],
-    },
-  },
-};
 
 // Fetching values based on organisation ID's
 const organisationUnitsValues = {
@@ -36,24 +24,6 @@ const organisationUnitsValues = {
   },
 };
 
-// Collects all the necessary data about organisations based on the organisationId
-function collectingOrgDataHelper(data) {
-  let organisationIds = [];
-  let organisationData = [];
-  if (data) {
-    for (let item of data.organisationList.children)
-      if (orgUnitId !== item.id) {
-        organisationIds.push(item.id);
-        organisationData.push({
-          orgUnitName: item.name,
-          orgUnitId: item.id,
-        });
-      }
-    return { organisationIds, organisationData };
-  }
-  return { organisationIds, organisationData };
-}
-
 // Collect all the necessary data from the commodity and collect it in one result list including organisation name and commodity
 function collectingDataHelper(
   valueOfStock,
@@ -61,8 +31,8 @@ function collectingDataHelper(
   organisationData
 ) {
   let result = [];
-  if (valueOfStock.data) {
-    let dataValues = valueOfStock.data.valueList.dataValues;
+  if (valueOfStock) {
+    let dataValues = valueOfStock.valueList.dataValues;
     let collectValues = [];
 
     for (let item of dataValues) {
@@ -105,17 +75,19 @@ function sort(result, sortResult) {
   return sortedResult;
 }
 
-function RequestCommodityTable({ requestedCommodityId, sortResult }) {
-  const { loading, error, data } = useDataQuery(organisationUnits);
-  let organisationIds = collectingOrgDataHelper(data).organisationIds;
+function RequestCommodityTable({
+  requestedCommodityId,
+  sortResult,
+  organisationIds,
+  organisationData,
+}) {
 
-  // ToDo: refetch this part in the first place
-  const valueOfStock = useDataQuery(organisationUnitsValues, {
+  const { loading, error, data } = useDataQuery(organisationUnitsValues, {
     variables: {
       orgId: organisationIds,
     },
   });
-
+  
   if (error) {
     return <span>ERROR: {error.message}</span>;
   }
@@ -126,9 +98,9 @@ function RequestCommodityTable({ requestedCommodityId, sortResult }) {
 
   if (data) {
     const result = collectingDataHelper(
-      valueOfStock,
+      data,
       requestedCommodityId,
-      collectingOrgDataHelper(data).organisationData
+      organisationData
     );
 
     const sortedResult = sort(result, sortResult);
