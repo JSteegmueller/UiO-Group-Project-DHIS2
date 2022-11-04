@@ -122,6 +122,9 @@ function RequestCommodityTable({
     }
 
     if (data) {
+        if (data.valueList.dataValues.length === 0) {
+            return <p>Dataset in other organizations for this period is still empty</p>;
+        }
         const result = collectingDataHelper(data, requestedCommodityId, organisationData);
 
         const sortedResult = sort(result, sortResult);
