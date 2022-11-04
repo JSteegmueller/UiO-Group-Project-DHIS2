@@ -113,7 +113,9 @@ export function StockTable({ data, period, requestHandler }) {
                                 </DataTableColumnHeader>
                             );
                         })}
-                        <DataTableColumnHeader fixed top="0"></DataTableColumnHeader>
+                        <DataTableColumnHeader fixed top="0">
+                            Check stock from other organizations
+                        </DataTableColumnHeader>
                     </DataTableRow>
                 </TableHead>
                 <TableBody>
@@ -130,7 +132,7 @@ export function StockTable({ data, period, requestHandler }) {
                                         small
                                         onClick={() => requestButton([k, v["Id"], period])}
                                     >
-                                        Request commodity
+                                        {String.fromCharCode(10132)}
                                     </Button>
                                 </DataTableCell>
                             </DataTableRow>
