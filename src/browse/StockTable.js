@@ -52,7 +52,7 @@ function mergeData(data) {
     return Object.entries(object);
 }
 
-export function StockTable({ data, period, activePageHandler }) {
+export function StockTable({ data, period, requestHandler }) {
     let fullTable = mergeData(data).sort();
     const [tableData, setTableData] = useState(fullTable);
     const [directionCommodity, setDirectionCommodity] = useState("default");
@@ -89,9 +89,8 @@ export function StockTable({ data, period, activePageHandler }) {
         setTableData(fullTable);
     }
 
-    function requestHandler(name, id, period) {
-        console.log(name, id, period);
-        activePageHandler("Dispensing");
+    function requestButton(values) {
+        requestHandler("RequestCommodity", values);
     }
 
     return (
@@ -129,7 +128,7 @@ export function StockTable({ data, period, activePageHandler }) {
                                     <Button
                                         primary
                                         small
-                                        onClick={() => requestHandler(k, v["Id"], period)}
+                                        onClick={() => requestButton([k, v["Id"], period])}
                                     >
                                         Request commodity
                                     </Button>
