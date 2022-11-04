@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { InputField, Button } from "@dhis2/ui"
 
-function CreateSearchBar({ fullTable, setTableData }) {
+function CreateSearchBar({ mergedData, setTableData }) {
   const [inputText, setInputText] = useState("")
 
   function enterKeyHandler(e) {
@@ -10,7 +10,7 @@ function CreateSearchBar({ fullTable, setTableData }) {
 
   const handleClick = (event) => {
     setTableData(
-        fullTable.filter(row => row.displayName.toLowerCase().includes(inputText.toLocaleLowerCase()))
+        mergedData.filter(row => row.displayName.toLowerCase().includes(inputText.toLocaleLowerCase()))
     )
   }
 

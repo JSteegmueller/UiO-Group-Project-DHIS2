@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import SearchBar from "./SearchBar";
-import AmountToRestock from "./AmountToRestock";
 import { Insert } from "./Insert";
 import {
     Table,
@@ -13,29 +12,37 @@ import {
 } from '@dhis2/ui'
 
 function mergeData(data) {
-    return data.dataSets.dataSetElements.map(d => {
+    return data.dataSets.dataSetElements.map(commodity => {
+        let matchedValue = data.dataValueSets.dataValues.find(dataValues => {
+            if(dataValues.dataElement == commodity.dataElement.id) {
+                return true
+            }
+        })
+
         return {
-            displayName: d.dataElement.displayName.split(" - ")[1],
-            id: d.dataElement.id,
+            displayName: commodity.dataElement.displayName,
+            id: commodity.dataElement.id,
+            value: matchedValue.value,
         }
     })
 }
 
 export function Commodities({data}) {
-    let fullTable = mergeData(data)
-    const [tableData, setTableData] = useState(fullTable);
-    const [amount, setAmount] = useState(0);
-    console.log(fullTable)
+    console.log(data)
+    let mergedData = mergeData(data)
+    const [tableData, setTableData] = useState(mergedData);
+    const [value, setAmount] = useState(0);
+    console.log(mergedData)
     return (
         <div>
             <h1>Restock commodities</h1>
-            <SearchBar fullTable={fullTable} setTableData={setTableData} />
+            <SearchBar mergedData={mergedData} setTableData={setTableData} />
             <Table>
                 <TableHead>
                     <TableRowHead>
                         <TableCellHead>Commodity</TableCellHead>
+                        <TableCellHead>Current stock</TableCellHead>
                         <TableCellHead>Restock amount</TableCellHead>
-                        <TableCellHead></TableCellHead>
                         <TableCellHead></TableCellHead>
                     </TableRowHead>
                 </TableHead>
@@ -43,13 +50,13 @@ export function Commodities({data}) {
                     {tableData.map((row) => {
                         return (
                             <TableRow key={row.id}>
-                                <TableCell>{row.displayName}</TableCell>
+                                <TableCell>{row.displayName.split(" - ")[1]}</TableCell>
+                                <TableCell>{row.value}</TableCell>
                                 <TableCell>
-                                    <Insert amount={amount} />
+                                    <Insert />
                                 </TableCell>
                                 <TableCell>
                                 </TableCell>
-                                <TableCell></TableCell>
                             </TableRow>
                         )
                     })}

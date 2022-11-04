@@ -9,11 +9,6 @@ export function Navigation(props) {
         active={props.activePage == "Restock"}
         onClick={() => props.activePageHandler("Restock")}
       />
-      <MenuItem
-        label="Browse"
-        active={props.activePage == "Browse"}
-        onClick={() => props.activePageHandler("Browse")}
-      />
     </Menu>
   );
 }

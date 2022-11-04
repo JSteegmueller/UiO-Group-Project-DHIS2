@@ -35,7 +35,7 @@ const dataMutationQuery = {
     }),
 }
 
-export function Insert(props) {
+export function Insert() {
     const [mutate, { loading, error }] = useDataMutation(dataMutationQuery)
 
     function onSubmit(formInput) {
@@ -54,8 +54,9 @@ export function Insert(props) {
                 {({ handleSubmit }) => (
                     <form onSubmit={handleSubmit} autoComplete="off">
                         <ReactFinalForm.Field
-                            name="commodity"
-                            label="Value"
+                            name="amount"
+                            label="Amount"
+                            placeholder="The number of packs to restock"
                             component={InputFieldFF}
                             validate={composeValidators(integer)}
                         />

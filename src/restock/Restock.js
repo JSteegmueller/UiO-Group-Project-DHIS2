@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { useDataQuery } from '@dhis2/app-runtime'
 import { CircularLoader } from '@dhis2/ui'
 import { Commodities } from "./Commodities";
@@ -13,13 +13,13 @@ function getPeriod(date) {
     return date.getFullYear().toString() + ("0" + (date.getMonth() + 1)).slice(-2);
 }
 
+const categoryOptionComboEndBalance = "J2Qf1jtZuj8"
+
 const dataQuery = {
     dataSets: {
         resource: 'dataSets/ULowA8V3ucd',
         params: {
             fields: [
-                'name',
-                'id',
                 'dataSetElements[dataElement[id, displayName]',
             ],
         },
@@ -30,6 +30,7 @@ const dataQuery = {
             orgUnit: process.env.REACT_APP_ORGUNIT,
             dataSet: 'ULowA8V3ucd',
             period: currentPeriod,
+            fields: "dataValues[dataElement, categoryOptionCombo, value"
         },
     },
 }
