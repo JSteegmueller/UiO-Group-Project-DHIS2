@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useDataQuery } from "@dhis2/app-runtime";
-import RequestCommoditySearchbar from "./RequestCommoditySearchbar";
 import {
   TableHead,
   DataTableRow,
@@ -136,7 +135,6 @@ function RequestCommodityTable({
 
     return (
       <div>
-        <RequestCommoditySearchbar receiveSearchQuery={"receiveSearchQuery"} />
         <DataTable>
           <TableHead>
             <DataTableRow>
