@@ -14,14 +14,11 @@ function MyApp() {
     return (
         <div className={classes.container}>
             <div className={classes.left}>
-                <Navigation
-                    activePage={activePage}
-                    activePageHandler={activePageHandler}
-                />
+                <Navigation activePage={activePage} activePageHandler={activePageHandler} />
             </div>
             <div className={classes.right}>
                 {activePage === "Dispensing" && <Dispensing />}
-                {activePage === "Browse" && <Browse />}
+                {activePage === "Browse" && <Browse activePageHandler={activePageHandler} />}
             </div>
         </div>
     );

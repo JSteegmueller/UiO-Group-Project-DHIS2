@@ -57,7 +57,7 @@ function getTimeDiff(date) {
     return Math.round(Math.abs((cDate - nDate) / oneDay));
 }
 
-export function Browse() {
+export function Browse({ activePageHandler }) {
     const { loading, error, data, refetch } = useDataQuery(request);
 
     if (error) {
@@ -84,7 +84,11 @@ export function Browse() {
                         previousPeriod={previousPeriod}
                     />
                 )}
-                <StockTable data={data} />
+                <StockTable
+                    data={data}
+                    period={currentPeriod}
+                    activePageHandler={activePageHandler}
+                />
             </div>
         );
     }

@@ -38,6 +38,7 @@ function mergeData(data) {
 
     const object = merged.reduce(function (r, a) {
         r[a.name] = r[a.name] || {
+            Id: a.id,
             Consumption: 0,
             Balance: 0,
             Order: 0,
@@ -51,7 +52,7 @@ function mergeData(data) {
     return Object.entries(object);
 }
 
-export function StockTable({ data }) {
+export function StockTable({ data, period, activePageHandler }) {
     let fullTable = mergeData(data).sort();
     const [tableData, setTableData] = useState(fullTable);
     const [directionCommodity, setDirectionCommodity] = useState("default");
@@ -88,8 +89,9 @@ export function StockTable({ data }) {
         setTableData(fullTable);
     }
 
-    function requestHandler() {
-        console.log("Pressed the REQUEST COMMODITY button");
+    function requestHandler(name, id, period) {
+        console.log(name, id, period);
+        activePageHandler("Dispensing");
     }
 
     return (
@@ -124,7 +126,11 @@ export function StockTable({ data }) {
                                 <DataTableCell>{v["Balance"]}</DataTableCell>
                                 <DataTableCell>{v["Order"]}</DataTableCell>
                                 <DataTableCell>
-                                    <Button primary small onClick={requestHandler}>
+                                    <Button
+                                        primary
+                                        small
+                                        onClick={() => requestHandler(k, v["Id"], period)}
+                                    >
                                         Request commodity
                                     </Button>
                                 </DataTableCell>
