@@ -18,7 +18,7 @@ function AmountToRestock({ setAmount }) {
         <InputField
             name="AmountToRestock"
             placeholder="Amount"
-            helpText="Number of packs"
+            helpText="Number of packs to restock"
             value={inputText}
             onChange={(input) => setInputText(input.value)}
         />

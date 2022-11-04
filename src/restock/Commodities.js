@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import SearchBar from "./SearchBar";
 import AmountToRestock from "./AmountToRestock";
+import { Insert } from "./Insert";
 import {
     Table,
     TableBody,
@@ -24,7 +25,7 @@ export function Commodities({data}) {
     let fullTable = mergeData(data)
     const [tableData, setTableData] = useState(fullTable);
     const [amount, setAmount] = useState(0);
-    //console.log(fullTable)
+    console.log(fullTable)
     return (
         <div>
             <h1>Restock commodities</h1>
@@ -44,11 +45,9 @@ export function Commodities({data}) {
                             <TableRow key={row.id}>
                                 <TableCell>{row.displayName}</TableCell>
                                 <TableCell>
-                                    <AmountToRestock setAmount={setAmount}/>
-                                    {console.log(amount)}
+                                    <Insert amount={amount} />
                                 </TableCell>
                                 <TableCell>
-                                  <p>{amount} packs added</p>
                                 </TableCell>
                                 <TableCell></TableCell>
                             </TableRow>
