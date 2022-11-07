@@ -7,11 +7,11 @@ import {
     CircularLoader,
     DataTableCell,
     DataTableColumnHeader,
-    DataTable,
+    DataTable
 } from "@dhis2/ui";
 
 const lifeCommodities = "ULowA8V3ucd";
-const categoryOptionComboEndBalance = "J2Qf1jtZuj8";
+const categoryOptionComboEndBalance = "rQLFnNXXIL0";
 
 // Fetching values based on organisation ID's
 const organisationUnitsValues = {
@@ -77,8 +77,7 @@ function RequestCommodityTable({
     requestedCommodityId,
     organisationIds,
     organisationData,
-    period,
-}) {
+    period}) {
     const { loading, error, data } = useDataQuery(organisationUnitsValues, {
         variables: {
             orgId: organisationIds,

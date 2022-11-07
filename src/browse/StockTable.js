@@ -130,7 +130,7 @@ export function StockTable({ data, period, requestHandler }) {
                                     <Button
                                         primary
                                         small
-                                        onClick={() => requestButton([k, v["Id"], period])}
+                                        onClick={() => requestButton([k, v["Id"], period, fullTable])}
                                     >
                                         {String.fromCharCode(10132)}
                                     </Button>
