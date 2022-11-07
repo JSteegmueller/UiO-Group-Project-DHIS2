@@ -1,0 +1,11 @@
+.jsx-1673646934 {
+    height: 400px;
+}
+.columns{
+    display: flex;
+    align-items: center;
+}
+
+.columns h3 {
+   margin-right: 10px;
+}
