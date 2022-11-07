@@ -84,7 +84,12 @@ export function Browse({ requestHandler }) {
                         previousPeriod={previousPeriod}
                     />
                 )}
-                <StockTable data={data} period={currentPeriod} requestHandler={requestHandler} />
+                <StockTable
+                    key={data.lastUpdated}
+                    data={data}
+                    period={currentPeriod}
+                    requestHandler={requestHandler}
+                />
             </div>
         );
     }
