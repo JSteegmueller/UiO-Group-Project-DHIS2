@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import SearchBar from "./SearchBar";
-import { Insert } from "./Insert";
+import {Transfer, MenuItem } from "@dhis2/ui"
 import {
     Table,
     TableBody,
@@ -20,7 +20,7 @@ function mergeData(data) {
         })
 
         return {
-            displayName: commodity.dataElement.displayName,
+            displayName: commodity.dataElement.displayName.split(" - ")[1],
             id: commodity.dataElement.id,
             value: matchedValue.value,
         }
@@ -28,40 +28,24 @@ function mergeData(data) {
 }
 
 export function Commodities({data}) {
-    console.log(data)
     let mergedData = mergeData(data)
-    const [tableData, setTableData] = useState(mergedData);
-    const [value, setAmount] = useState(0);
-    console.log(mergedData)
+
+    const [options] = useState(mergedData.map(x => ({label: x.displayName, value: x.displayName})))
+    const [selected, setSelected] = useState([])
+
+    
+    console.log(selected)
+
     return (
         <div>
             <h1>Restock commodities</h1>
-            <SearchBar mergedData={mergedData} setTableData={setTableData} />
-            <Table>
-                <TableHead>
-                    <TableRowHead>
-                        <TableCellHead>Commodity</TableCellHead>
-                        <TableCellHead>Current stock</TableCellHead>
-                        <TableCellHead>Restock amount</TableCellHead>
-                        <TableCellHead></TableCellHead>
-                    </TableRowHead>
-                </TableHead>
-                <TableBody>
-                    {tableData.map((row) => {
-                        return (
-                            <TableRow key={row.id}>
-                                <TableCell>{row.displayName.split(" - ")[1]}</TableCell>
-                                <TableCell>{row.value}</TableCell>
-                                <TableCell>
-                                    <Insert />
-                                </TableCell>
-                                <TableCell>
-                                </TableCell>
-                            </TableRow>
-                        )
-                    })}
-                </TableBody>
-              </Table>
+            <Transfer
+                filterable
+                initialSearchTerm=""
+                onChange={({selected }) => setSelected(selected)}
+                options={options}
+                selected={selected}
+            />
         </div>
     );
 }
