@@ -1,15 +1,5 @@
 import React, { useState } from "react"
-import SearchBar from "./SearchBar";
-import {Transfer, MenuItem } from "@dhis2/ui"
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableCellHead,
-    TableHead,
-    TableRow,
-    TableRowHead,
-} from '@dhis2/ui'
+import {Transfer } from "@dhis2/ui"
 
 function mergeData(data) {
     return data.dataSets.dataSetElements.map(commodity => {
@@ -32,7 +22,6 @@ export function Commodities({data}) {
 
     const [options] = useState(mergedData.map(x => ({label: x.displayName, value: x.displayName})))
     const [selected, setSelected] = useState([])
-
     
     console.log(selected)
 
