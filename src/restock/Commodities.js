@@ -1,19 +1,50 @@
 import React, { useState } from "react"
+import { useDataMutation } from '@dhis2/app-runtime'
 import {
-    ReactFinalForm,
-    InputFieldFF,
+    Table,
+    TableRow,
+    TableCell,
+    TableRowHead,
+    TableHead,
+    TableCellHead,
+    TableBody,
+    InputField,
     Button,
-    SingleSelectFieldFF,
-    hasValue,
-    number,
-    composeValidators,
-    Transfer
+    SingleSelect,
+    SingleSelectOption,
 } from '@dhis2/ui'
+
+const date = new Date();
+const pDate = new Date(date);
+pDate.setDate(0);
+
+const currentPeriod = getPeriod(date);
+
+function getPeriod(date) {
+    return date.getFullYear().toString() + ("0" + (date.getMonth() + 1)).slice(-2);
+}
+
+const dataMutationQuery = {
+    resource: 'dataValueSets',
+    type: 'create',
+    dataSet: 'ULowA8V3ucd',
+    data: ({ value, dataElement }) => ({
+        dataValues: [
+            {
+                dataElement: dataElement,
+                period: currentPeriod,
+                orgUnit: process.env.REACT_APP_ORGUNIT,
+                value: value,
+                categoryOptionCombo: "rQLFnNXXIL0",
+            },
+        ],
+    }),
+}
 
 function mergeData(data) {
     return data.dataSets.dataSetElements.map(commodity => {
         let matchedValue = data.dataValueSets.dataValues.find(dataValues => {
-            if(dataValues.dataElement == commodity.dataElement.id) {
+            if(dataValues.dataElement == commodity.dataElement.id && dataValues.categoryOptionCombo === "rQLFnNXXIL0") {
                 return true
             }
         })
@@ -26,39 +57,94 @@ function mergeData(data) {
     })
 }
 
-export function Commodities({data}) {
+export function Commodities({data, refetch}) {
     let mergedData = mergeData(data)
-
-    const [options] = useState(mergedData.map(x => ({label: x.displayName, value: x.displayName})))
+    const [amount, setAmount] = useState({})
     const [selected, setSelected] = useState([])
+    //console.log(mergedData)
 
-    console.log(selected)
+    const [mutate, { loading, error }] = useDataMutation(dataMutationQuery)
 
-    function onSubmit(formInput) {
-        console.log(formInput)
+    function handleClick() {
+        Object.entries(amount).map(commodity => {
+            //console.log(commodity)
+            let match = mergedData.find(v => v.displayName === commodity[0])
+            //console.log(match)
+            mutate({
+                value: Number(match.value) + Number(commodity[1]),
+                dataElement: match.id,
+            })
+        })
+        setAmount({})
+        refetch()
     }
 
     return (
         <div>
             <h1>Restock commodities</h1>
-            <Transfer
+            <SingleSelect 
+                className="select" 
                 filterable
-                height="400px"
-                leftHeader={<h3>Select commodities to restock</h3>}
-                rightHeader={<h3>Selected commoditites</h3>}
-                filterPlaceholder="Search"
-                addAllText="Select all"
-                addIndividualText="Select individual"
-                removeAllText="Deselect all"
-                removeIndividualText="Deselect individual"
-                onChange={({selected }) => setSelected(selected)}
-                options={options}
-                selected={selected}
-                selectedEmptyComponent={<p style={{textAlign: 'center'}}>You have not selected anything yet<br /></p>}
-            />
+                placeholder="Search commodities"
+                noMatchText="No match found"
+                onChange={({selected}) => setSelected(old => [...old, selected])}
+            >
+                {mergedData.map(commodity => {
+                    return (
+                        <SingleSelectOption key={commodity.id}
+                            label={commodity.displayName} 
+                            value={commodity.displayName} />
+                    )
+                })}
+            </SingleSelect>
+            <Table>
+                <TableHead>
+                    <TableRowHead>
+                        <TableCellHead>
+                            Commodity
+                        </TableCellHead>
+                        <TableCellHead>
+                            In stock
+                        </TableCellHead>
+                        <TableCellHead>
+                            Value
+                        </TableCellHead>
+                    </TableRowHead>
+                </TableHead>
+                <TableBody>
+                    {mergedData.map(commodity => {
+                        if(selected.includes(commodity.displayName)) {
+                            return (
+                                <TableRow key={commodity.id}>
+                                    <TableCell>
+                                        {commodity.displayName}
+                                    </TableCell>
+                                    <TableCell>
+                                        {commodity.value}
+                                    </TableCell>
+                                    <TableCell>
+                                        <InputField 
+                                            onChange={
+                                                v => {
+                                                    setAmount(old => (
+                                                        {
+                                                            ...old,
+                                                            [commodity.displayName]:v.value
+                                                        }
+                                                    ))
+                                                }
+                                            }
+                                            value={amount[commodity.displayName]}
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        }
+                    })}
+                </TableBody>
+            </Table>
             <br></br>
-            
-            <Button name="confirm" primary value="default">
+            <Button name="confirm" onClick={handleClick} primary value="default">
                 Confirm
             </Button>
         </div>

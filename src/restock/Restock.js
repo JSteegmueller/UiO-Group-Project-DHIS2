@@ -20,7 +20,7 @@ const dataQuery = {
         resource: 'dataSets/ULowA8V3ucd',
         params: {
             fields: [
-                'dataSetElements[dataElement[id, displayName]',
+                'dataSetElements[dataElement[id, displayName, categoryCombo[categoryOptionCombos[id, displayName]]]',
             ],
         },
     },
@@ -30,14 +30,14 @@ const dataQuery = {
             orgUnit: process.env.REACT_APP_ORGUNIT,
             dataSet: 'ULowA8V3ucd',
             period: currentPeriod,
-            fields: "dataValues[dataElement, categoryOptionCombo, value"
+            fields: "dataValues[dataElement, categoryOptionCombo, value]"
         },
     },
 }
 
 export function Restock() {
-    const { loading, error, data } = useDataQuery(dataQuery)
-    
+    const { loading, error, data, refetch } = useDataQuery(dataQuery)
+
     if (error) {
         return <span>ERROR: {error.message}</span>
     }
@@ -49,7 +49,7 @@ export function Restock() {
     if (data) {
         return (
             <div>
-                <Commodities data={data} />
+                <Commodities data={data} refetch={refetch} />
             </div>
         )  
     }
