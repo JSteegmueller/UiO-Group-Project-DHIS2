@@ -24,7 +24,7 @@ function MyApp() {
                 <Navigation activePage={activePage} activePageHandler={activePageHandler} />
             </div>
             <div className={classes.right}>
-                {activePage === "Dispensing" && <Dispensing />}
+                {activePage === "Dispensing" && <Dispensing requestHandler={requestHandler} />}
                 {activePage === "Browse" && <Browse requestHandler={requestHandler} />}
                 {activePage === "RequestCommodity" && (
                     <RequestCommodity commodityValue={commodityValue} />

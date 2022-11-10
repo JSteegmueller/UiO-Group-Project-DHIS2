@@ -11,7 +11,7 @@ function TransactionTable({transactions}) {
     const [slicedTransactions, setSlicedTransactions] = useState([])
     useEffect(() => {
         setSlicedTransactions(transactions.slice((page - 1) * pageSize, pageSize * page))
-    }, [page, pageSize])
+    }, [page, pageSize, transactions])
 
     return <div>
         <Table>

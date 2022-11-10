@@ -52,8 +52,6 @@ function collectingDataHelper(valueOfStock, requestedCommodityId, organisationDa
                 (organisationName) => organisationName.orgUnitId === stocks.orgUnitId
             ),
         }));
-
-        return result;
     }
     return result;
 }

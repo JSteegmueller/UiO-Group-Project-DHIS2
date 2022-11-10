@@ -6,6 +6,8 @@ class Transaction {
         this.dispensedBy = dispensedBy
         this.dispensedTo = dispensedTo
         this.transactionType = transactionType
+        this.endBalance = 0
+        this.consumption = 0
     }
 }
 

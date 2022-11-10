@@ -138,7 +138,14 @@ export function StockTable({ data, period, requestHandler }) {
                                         primary
                                         small
                                         onClick={() =>
-                                            requestButton([k, v["id"], period, fullTable])
+                                            requestButton(
+                                                {
+                                                value: v.id,
+                                                label: k,
+                                                period: period,
+                                                commoditiesValueSet: fullTable,
+                                                sendBy: "Browse"
+                                            })
                                         }
                                     >
                                         {String.fromCharCode(10132)}
