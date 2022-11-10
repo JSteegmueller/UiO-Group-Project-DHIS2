@@ -67,7 +67,7 @@ export function Commodities({data, refetch}) {
 
     const [mutate, { loading, error }] = useDataMutation(dataMutationQuery)
 
-    const handleClick = () => {
+    const handleConfirmClick = () => {
         Object.entries(amount).map(commodity => {
             //console.log(commodity)
             let match = sortedData.find(v => v.displayName === commodity[0])
@@ -106,11 +106,12 @@ export function Commodities({data, refetch}) {
                             Commodity
                         </TableCellHead>
                         <TableCellHead>
-                            In stock
+                            Current stock
                         </TableCellHead>
                         <TableCellHead>
-                            Value
+                            Restock amount
                         </TableCellHead>
+                        <TableCellHead></TableCellHead>
                     </TableRowHead>
                 </TableHead>
                 <TableBody>
@@ -137,6 +138,20 @@ export function Commodities({data, refetch}) {
                                                 }
                                             }
                                             value={amount[commodity.displayName]}
+                                            placeholder="Number of packs to restock"
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button
+                                                icon={<svg height="24" viewBox="0 0 320 512" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z" fill="#inherit"/></svg>}
+                                                name="Icon small button"
+                                                onClick={
+                                                    () => setSelected((current) =>
+                                                        current.filter((c) => c !== commodity.displayName))
+                                                }
+                                                destructive
+                                                small
+                                                value="default"
                                         />
                                     </TableCell>
                                 </TableRow>
@@ -146,7 +161,11 @@ export function Commodities({data, refetch}) {
                 </TableBody>
             </Table>
             <br></br>
-            <Button name="confirm" onClick={handleClick} primary value="default">
+            <Button 
+                name="confirm" 
+                onClick={handleConfirmClick} 
+                primary value="default"
+            >
                 Confirm
             </Button>
         </div>
