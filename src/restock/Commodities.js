@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useDataMutation } from '@dhis2/app-runtime'
 import {
     Table,
@@ -59,16 +59,18 @@ function mergeData(data) {
 
 export function Commodities({data, refetch}) {
     let mergedData = mergeData(data)
+    let sortedData = mergedData.sort((a, b) => a.displayName.localeCompare(b.displayName))
+
     const [amount, setAmount] = useState({})
     const [selected, setSelected] = useState([])
     //console.log(mergedData)
 
     const [mutate, { loading, error }] = useDataMutation(dataMutationQuery)
 
-    function handleClick() {
+    const handleClick = () => {
         Object.entries(amount).map(commodity => {
             //console.log(commodity)
-            let match = mergedData.find(v => v.displayName === commodity[0])
+            let match = sortedData.find(v => v.displayName === commodity[0])
             //console.log(match)
             mutate({
                 value: Number(match.value) + Number(commodity[1]),
@@ -85,13 +87,13 @@ export function Commodities({data, refetch}) {
             <SingleSelect 
                 className="select" 
                 filterable
-                placeholder="Search commodities"
+                placeholder="Select commodities to restock"
                 noMatchText="No match found"
                 onChange={({selected}) => setSelected(old => [...old, selected])}
             >
-                {mergedData.map(commodity => {
+                {sortedData.map(commodity => {
                     return (
-                        <SingleSelectOption key={commodity.id}
+                        <SingleSelectOption key={commodity.displayName}
                             label={commodity.displayName} 
                             value={commodity.displayName} />
                     )
@@ -112,7 +114,7 @@ export function Commodities({data, refetch}) {
                     </TableRowHead>
                 </TableHead>
                 <TableBody>
-                    {mergedData.map(commodity => {
+                    {sortedData.map(commodity => {
                         if(selected.includes(commodity.displayName)) {
                             return (
                                 <TableRow key={commodity.id}>
