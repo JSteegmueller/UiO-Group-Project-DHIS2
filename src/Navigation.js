@@ -1,5 +1,5 @@
 import React from "react";
-import { Menu, MenuItem } from "@dhis2/ui";
+import {Menu, MenuItem} from "@dhis2/ui";
 
 export function Navigation(props) {
     return (
@@ -10,8 +10,13 @@ export function Navigation(props) {
                 onClick={() => props.activePageHandler("Dispensing")}
             />
             <MenuItem
+                label="History"
+                active={props.activePage === "History"}
+                onClick={() => props.activePageHandler("History")}
+            />
+            <MenuItem
                 label="Browse"
-                active={props.activePage == "Browse"}
+                active={props.activePage === "Browse"}
                 onClick={() => props.activePageHandler("Browse")}
             />
         </Menu>

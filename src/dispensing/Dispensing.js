@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import TransactionForm from "./TransactionForm";
-import TransactionTable from "./TransactionTable";
 import {useDataMutation, useDataQuery} from "@dhis2/app-runtime";
 import {createTransactionKeyMutation, getTransactionsQuery, updateTransactionsMutation,} from "./api/transactions";
 import {
@@ -11,8 +10,9 @@ import {
 } from "./api/dataValues";
 import {getCurrentPeriod, remapCommoditiesForTransactionForm} from "./helper/HelperFunctions";
 import PendingTransactionTable from "./PendingTransactionTable";
-import {FormAction} from "./helper/FormAction";
 import {readTransactionsFromLocal, writeTransactionsToLocal} from "./helper/LocalStorage";
+import {FormAction} from "./helper/FormAction";
+import {TransactionStatus} from "./helper/Transaction";
 
 function Dispensing({requestHandler}) {
     const onConsumptionQueryError = (error) => {
@@ -127,37 +127,35 @@ function Dispensing({requestHandler}) {
     };
 
     const submitTransactions = async () => {
+        setSubmitDisabled(true);
         let date = Date.now();
         for (const transaction of pendingTransactions) {
             transaction.date = date;
+            transaction.status = TransactionStatus.submitting
             await submitTransaction(transaction);
+            transaction.status = TransactionStatus.submitted
         }
         setPendingTransactions([]);
+        writeTransactionsToLocal([])
+        setSelectedCommodity(null);
+        setSubmitDisabled(false);
+        setCommodityEndBalance(null)
+        await transactionQuery.refetch();
     };
 
-    const onNewTransaction = async ({transaction, action}) => {
+    const addTransaction = async ({transaction, action}) => {
         setSubmitDisabled(true);
         transaction.endBalance = commodityEndBalance;
         transaction.consumption = commodityConsumption;
         checkAvailability(transaction);
-        switch (action) {
-            case FormAction.addAmountLeft:
-            case FormAction.check:
-                setShowCommodityRequest(false);
-            case FormAction.add:
-                addTransactionToPending(transaction);
-                break;
-            case FormAction.submit:
-                await submitTransactions();
-                await transactionQuery.refetch();
-                break;
+        if (action !== FormAction.add) {
+            setShowCommodityRequest(false);
         }
-
+        addTransactionToPending(transaction);
         let selected = selectedCommodity;
         setSelectedCommodity(null);
         setSelectedCommodity(selected);
         setSubmitDisabled(false);
-
         if (action === FormAction.check) {
             requestHandler("RequestCommodity", {
                 value: transaction.commodity.id,
@@ -209,33 +207,23 @@ function Dispensing({requestHandler}) {
 
     return (
         <div>
-            <div
-                style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(2, 1fr)",
-                    gridGap: 20,
-                }}
-            >
-                <TransactionForm
-                    onFormAction={onNewTransaction}
-                    amountLeft={commodityEndBalance}
-                    commodityChanged={setSelectedCommodity}
-                    disabled={submitDisabled}
-                    reset={() => setPendingTransactions([])}
-                    showCommodityRequest={showCommodityRequest}
-                    requestHandler={requestHandler}
-                    setCommodities={setCommodities}
-                />
-                <PendingTransactionTable
-                    pendingTransactions={pendingTransactions}
-                    onDelete={removeTransactionFromPending}
-                />
-            </div>
+            <TransactionForm
+                addTransaction={addTransaction}
+                submitTransactions={submitTransactions}
+                amountLeft={commodityEndBalance}
+                commodityChanged={setSelectedCommodity}
+                disabled={submitDisabled}
+                reset={() => setPendingTransactions([])}
+                showCommodityRequest={showCommodityRequest}
+                requestHandler={requestHandler}
+                setCommodities={setCommodities}
+                transactionCount={pendingTransactions.length}
+            />
             <br/>
-            <div>
-                <TransactionTable transactions={transactionQuery.data?.transactions}/>
-            </div>
-            <br/>
+            <PendingTransactionTable
+                pendingTransactions={pendingTransactions}
+                onDelete={removeTransactionFromPending}
+            />
         </div>
     );
 }

@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from "react";
 import {Pagination, Table, TableBody, TableCell, TableCellHead, TableHead, TableRow, TableRowHead} from "@dhis2/ui";
+import {useDataQuery} from "@dhis2/app-runtime";
+import {getTransactionsQuery} from "../dispensing/api/transactions";
 
-function TransactionTable({transactions}) {
-    if (!transactions) {
-        return null
-    }
-
+function TransactionTable() {
+    const {data} = useDataQuery(getTransactionsQuery);
     const [page, setPage] = useState(1)
-    const [pageSize, setPageSize] = useState(5)
+    const [pageSize, setPageSize] = useState(10)
     const [slicedTransactions, setSlicedTransactions] = useState([])
+
+    if (!data.transactions) return null
+    const transactions = data.transactions
     useEffect(() => {
         setSlicedTransactions(transactions.slice((page - 1) * pageSize, pageSize * page))
     }, [page, pageSize, transactions])
@@ -48,6 +50,7 @@ function TransactionTable({transactions}) {
             pageCount={Math.ceil(transactions.length / pageSize)}
             pageSize={pageSize}
             total={transactions.length}/>
+        <br/>
     </div>
 
 }

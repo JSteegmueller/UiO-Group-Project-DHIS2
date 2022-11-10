@@ -15,10 +15,7 @@ function PendingTransactionTable({pendingTransactions, onDelete}) {
         return null
     }
     return <Box>
-        <DataTable
-            layout="fixed"
-            scrollHeight="400px"
-            scrollWidth="500px">
+        <DataTable>
             <TableHead>
                 <DataTableRow>
                     <DataTableColumnHeader>
@@ -29,6 +26,9 @@ function PendingTransactionTable({pendingTransactions, onDelete}) {
                     </DataTableColumnHeader>
                     <DataTableColumnHeader>
                         Delete
+                    </DataTableColumnHeader>
+                    <DataTableColumnHeader>
+                        Status
                     </DataTableColumnHeader>
                 </DataTableRow>
             </TableHead>
@@ -45,6 +45,9 @@ function PendingTransactionTable({pendingTransactions, onDelete}) {
                                     onClick={() => onDelete(index)}>
                                     {String.fromCharCode(0x274C)}
                                 </Button>
+                            </DataTableCell>
+                            <DataTableCell>
+                                {transaction.status}
                             </DataTableCell>
                         </DataTableRow>
                     })

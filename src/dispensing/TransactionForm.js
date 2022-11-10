@@ -17,10 +17,21 @@ function TransactionForm(props) {
     useEffect(() => {
         props.setCommodities(commoditiesRequest.data?.commodities)
     }, [commoditiesRequest.data])
-    
-    const submit = (formInput) => {
-        if (formInput.action === FormAction.submit) props.onFormAction({action: formInput.action})
 
+    useEffect(() => {
+        if (props.transactionCount > 0) {
+            setFormState(FormState.commodityPending)
+        } else {
+            setFormState(FormState.initial)
+        }
+    }, [props.transactionCount])
+
+
+    const submitTransaction = () => {
+        props.submitTransactions()
+    }
+
+    const addTransaction = (formInput) => {
         let commodity = {
             name: formInput.commodity.label,
             id: formInput.commodity.value,
@@ -35,13 +46,11 @@ function TransactionForm(props) {
             formInput.dispensedTo,
             TransactionType.dispense
         );
-        props.onFormAction({transaction, action: formInput.action});
-        if (formInput.action === FormAction.submit) setFormState(FormState.initial);
-        else setFormState(FormState.commodityPending);
+        props.addTransaction({transaction, action: formInput.action});
     };
 
     return (
-        <ReactFinalForm.Form onSubmit={submit}>
+        <ReactFinalForm.Form onSubmit={addTransaction}>
             {({handleSubmit, form}) => (
                 <form onSubmit={handleSubmit} autoComplete="off">
                     <ReactFinalForm.Field
@@ -58,8 +67,8 @@ function TransactionForm(props) {
                     <ReactFinalForm.Field
                         name="amount"
                         label={
-                            "Amount/" +
-                            (props.amountLeft != null ? `In stock: ${props.amountLeft}` : "")
+                            "Amount " +
+                            (props.amountLeft != null ? `/ In stock: ${props.amountLeft}` : "")
                         }
                         type="number"
                         placeholder="The amount you want to dispense"
@@ -87,11 +96,12 @@ function TransactionForm(props) {
                         Add to Transaction
                     </Button>
                     <Button
-                        type="submit"
+                        type="button"
                         primary
                         disabled={props.disabled || formState === FormState.initial}
                         onClick={() => {
-                            form.change("action", FormAction.submit);
+                            submitTransaction()
+                            form.reset()
                         }}
                     >
                         Submit Transaction
@@ -102,7 +112,6 @@ function TransactionForm(props) {
                         disabled={props.disabled || formState === FormState.initial}
                         onClick={() => {
                             props.reset();
-                            setFormState(FormState.initial);
                         }}
                     >
                         Cancel Transaction
@@ -119,7 +128,7 @@ function TransactionForm(props) {
                                 primary
                                 small
                             >
-                                Submission & Commodity check
+                                Add only available stock & Commodity check
                             </Button>
                             <Button
                                 type="submit"
@@ -129,7 +138,7 @@ function TransactionForm(props) {
                                 secondary
                                 small
                             >
-                                Submission only
+                                Add only available stock
                             </Button>
                         </NoticeBox>
                     )}
