@@ -1,35 +1,24 @@
 import React, { useState } from "react";
-import { InputField, Button } from "@dhis2/ui";
+import { InputField } from "@dhis2/ui";
 
 export function SearchBar({ fullTable, setTableData }) {
     const [inputText, setInputText] = useState("");
 
-    function enterKeyHandler(e) {
-        if (e.key === "Enter") searchHandler();
-    }
-    function deleteHandler() {
-        setInputText("");
-        setTableData(fullTable);
-    }
-    function searchHandler() {
+    function onChange(input) {
+        setInputText(input.value);
         setTableData(
-            fullTable.filter(([k, _]) => k.toLowerCase().includes(inputText.toLowerCase()))
+            fullTable.filter(([k, _]) => k.toLowerCase().includes(input.value.toLowerCase()))
         );
     }
+
     return (
-        <div onKeyUp={enterKeyHandler}>
+        <div>
             <InputField
                 name="searchInput"
                 placeholder="Search commodities"
                 value={inputText}
-                onChange={(input) => setInputText(input.value)}
+                onChange={onChange}
             />
-            <Button primary small onClick={searchHandler}>
-                Search
-            </Button>
-            <Button destructive small onClick={deleteHandler}>
-                Delete
-            </Button>
         </div>
     );
 }
