@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDataMutation } from "@dhis2/app-runtime";
+import { useDataMutation, useDataQuery } from "@dhis2/app-runtime";
 import {
     Table,
     TableRow,
@@ -41,6 +41,14 @@ const dataMutationQuery = {
     }),
 };
 
+const updateTransactionsMutation = {
+    resource: "dataStore/IN5320-G3/restocks",
+    type: "update",
+    data: ({ restocks }) => (
+        restocks
+    )
+};
+
 function mergeData(data) {
     return data.dataSets.dataSetElements.map((commodity) => {
         let matchedValue = data.dataValueSets.dataValues.find((dataValues) => {
@@ -68,17 +76,25 @@ export function Commodities({ data, refetch, refreshComponent }) {
     const [amount, setAmount] = useState({});
     const [selected, setSelected] = useState([]);
     const [mutate, { loading, error }] = useDataMutation(dataMutationQuery);
-    const [confirmed, setConfirmed ] = useState(false);
+    const [mutateRestocks, {} ] = useDataMutation(updateTransactionsMutation);
+    //const [restocks, setRestocks ] = useState([])
+    
+    const restock = []
 
+ 
     const handleConfirmClick = async () => {
         Object.entries(amount).map((commodity) => {
+            restock.push([commodity[0], commodity[1]])
+            
             let match = sortedData.find((v) => v.displayName === commodity[0]);
-            console.log(match);
             mutate({
                 value: Number(match.value) + Number(commodity[1]),
                 dataElement: match.id,
             });
         });
+        mutateRestocks(
+            restock
+        )
         setAmount({});
         refreshComponent();
     };
