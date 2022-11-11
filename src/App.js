@@ -29,7 +29,7 @@ function MyApp() {
                 {activePage === "History" && <TransactionTable/>}
                 {activePage === "Browse" && <Browse requestHandler={requestHandler}/>}
                 {activePage === "RequestCommodity" && (
-                    <RequestCommodity commodityValue={commodityValue}/>
+                    <RequestCommodity commodityValue={commodityValue} activePageHandler={activePageHandler}/>
                 )}
             </div>
         </div>
