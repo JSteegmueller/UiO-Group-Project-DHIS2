@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, composeValidators, hasValue, InputFieldFF, NoticeBox, ReactFinalForm,} from "@dhis2/ui";
+import {Button, composeValidators, hasValue, InputFieldFF, NoticeBox, ReactFinalForm, createMinNumber} from "@dhis2/ui";
 import {useDataQuery} from "@dhis2/app-runtime";
 import {getAvailableCommoditiesQuery} from "./api/commodities";
 import {remapCommoditiesForTransactionForm} from "./helper/HelperFunctions";
@@ -73,7 +73,7 @@ function TransactionForm(props) {
                         type="number"
                         placeholder="The amount you want to dispense"
                         component={InputFieldFF}
-                        validate={composeValidators(hasValue)}
+                        validate={ createMinNumber(1) }
                     />
                     <ReactFinalForm.Field
                         name="dispensedTo"
