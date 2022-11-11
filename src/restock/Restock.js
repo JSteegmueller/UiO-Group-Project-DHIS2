@@ -33,6 +33,9 @@ const dataQuery = {
             fields: "dataValues[dataElement, categoryOptionCombo, value]",
         },
     },
+    storage: {
+        resource: "/dataStore/IN5320-G3/restocks",
+    },
 };
 
 export function Restock() {

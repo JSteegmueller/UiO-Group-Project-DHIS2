@@ -44,9 +44,7 @@ const dataMutationQuery = {
 const updateTransactionsMutation = {
     resource: "dataStore/IN5320-G3/restocks",
     type: "update",
-    data: ({ restocks }) => (
-        restocks
-    )
+    data: ({ restock }) => restock,
 };
 
 function mergeData(data) {
@@ -69,33 +67,28 @@ function mergeData(data) {
 }
 
 export function Commodities({ data, refetch, refreshComponent }) {
-    refetch();
     let mergedData = mergeData(data);
     let sortedData = mergedData.sort((a, b) => a.displayName.localeCompare(b.displayName));
-
     const [amount, setAmount] = useState({});
     const [selected, setSelected] = useState([]);
-    const [mutate, { loading, error }] = useDataMutation(dataMutationQuery);
-    const [mutateRestocks, {} ] = useDataMutation(updateTransactionsMutation);
-    //const [restocks, setRestocks ] = useState([])
-    
-    const restock = []
+    const [mutate] = useDataMutation(dataMutationQuery);
+    const [mutateRestocks] = useDataMutation(updateTransactionsMutation);
 
- 
     const handleConfirmClick = async () => {
+        const storage = data.storage;
+        const restock = [];
         Object.entries(amount).map((commodity) => {
-            restock.push([commodity[0], commodity[1]])
-            
+            restock.push([commodity[0], commodity[1]]);
             let match = sortedData.find((v) => v.displayName === commodity[0]);
             mutate({
                 value: Number(match.value) + Number(commodity[1]),
                 dataElement: match.id,
             });
         });
-        mutateRestocks(
-            restock
-        )
+        storage.push(restock);
+        await mutateRestocks({ restock: storage });
         setAmount({});
+        refetch();
         refreshComponent();
     };
 
@@ -202,7 +195,7 @@ export function Commodities({ data, refetch, refreshComponent }) {
                                 <TableCell>{commodity.value}</TableCell>
                                 <TableCell>{commodity.value}</TableCell>
                             </TableRow>
-                        )
+                        );
                     })}
                 </TableBody>
             </Table>
