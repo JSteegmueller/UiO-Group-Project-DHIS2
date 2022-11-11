@@ -1,13 +1,14 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import classes from "./App.module.css";
-import {Browse} from "./browse/Browse";
-import {Navigation} from "./Navigation";
+import Navigation from "./Navigation";
+import Browse from "./browse/Browse";
+import Dashboard from "./dashboard/Dashboard";
 import Dispensing from "./dispensing/Dispensing";
 import RequestCommodity from "./requestCommodity/RequestCommodity";
 import TransactionTable from "./transactionHistory/TransactionTable";
 
 function MyApp() {
-    const [activePage, setActivePage] = useState("Dispensing");
+    const [activePage, setActivePage] = useState("Dashboard");
     const [commodityValue, setCommodityValue] = useState([]);
 
     function activePageHandler(page) {
@@ -22,12 +23,13 @@ function MyApp() {
     return (
         <div className={classes.container}>
             <div className={classes.left}>
-                <Navigation activePage={activePage} activePageHandler={activePageHandler}/>
+                <Navigation activePage={activePage} activePageHandler={activePageHandler} />
             </div>
             <div className={classes.right}>
-                {activePage === "Dispensing" && <Dispensing requestHandler={requestHandler}/>}
-                {activePage === "History" && <TransactionTable/>}
-                {activePage === "Browse" && <Browse requestHandler={requestHandler}/>}
+                {activePage === "Dashboard" && <Dashboard />}
+                {activePage === "Dispensing" && <Dispensing requestHandler={requestHandler} />}
+                {activePage === "History" && <TransactionTable />}
+                {activePage === "Browse" && <Browse requestHandler={requestHandler} />}
                 {activePage === "RequestCommodity" && (
                     <RequestCommodity commodityValue={commodityValue} activePageHandler={activePageHandler}/>
                 )}

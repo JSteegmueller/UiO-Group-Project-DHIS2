@@ -1,14 +1,8 @@
 import React, { useState } from "react";
-import { StockTable } from "./StockTable";
+import StockTable from "./StockTable";
+import { date, nextRestock, currentPeriod, previousPeriod } from "./helper/getDates";
 import { useDataQuery, useDataMutation } from "@dhis2/app-runtime";
 import { CircularLoader } from "@dhis2/ui";
-
-const date = new Date();
-const pDate = new Date(date);
-pDate.setDate(0);
-const nextRestock = getTimeDiff(date);
-const currentPeriod = getPeriod(date);
-const previousPeriod = getPeriod(pDate);
 
 const request = {
     values: {
@@ -71,18 +65,7 @@ const mutateBalance = {
     type: "create",
 };
 
-function getPeriod(date) {
-    return date.getFullYear().toString() + ("0" + (date.getMonth() + 1)).slice(-2);
-}
-
-function getTimeDiff(date) {
-    const cDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    const nDate = new Date(date.getFullYear(), date.getMonth() + (date.getDate() < 15 ? 0 : 1), 14);
-    const oneDay = 24 * 60 * 60 * 1000;
-    return Math.round(Math.abs((cDate - nDate) / oneDay));
-}
-
-export function Browse({ requestHandler }) {
+function Browse({ requestHandler }) {
     const { loading, error, data, refetch } = useDataQuery(request);
     const [mutateB, { loading1, error1 }] = useDataMutation(mutateBalance);
     const [mutateL, { loading2, error2 }] = useDataMutation(mutateLastUpdated);
@@ -138,3 +121,5 @@ export function Browse({ requestHandler }) {
         );
     }
 }
+
+export default Browse;

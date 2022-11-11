@@ -1,9 +1,14 @@
 import React from "react";
-import {Menu, MenuItem} from "@dhis2/ui";
+import { Menu, MenuItem } from "@dhis2/ui";
 
-export function Navigation(props) {
+function Navigation(props) {
     return (
         <Menu>
+            <MenuItem
+                label="Dashboard"
+                active={props.activePage === "Dashboard"}
+                onClick={() => props.activePageHandler("Dashboard")}
+            />
             <MenuItem
                 label="Dispensing"
                 active={props.activePage === "Dispensing"}
@@ -22,3 +27,5 @@ export function Navigation(props) {
         </Menu>
     );
 }
+
+export default Navigation;

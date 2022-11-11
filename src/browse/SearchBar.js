@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { InputField } from "@dhis2/ui";
 
-export function SearchBar({ fullTable, setTableData }) {
+function SearchBar({ fullTable, setTableData }) {
     const [inputText, setInputText] = useState("");
 
     function onChange(input) {
@@ -22,3 +22,5 @@ export function SearchBar({ fullTable, setTableData }) {
         </div>
     );
 }
+
+export default SearchBar;
