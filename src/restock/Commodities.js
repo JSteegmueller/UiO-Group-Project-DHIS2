@@ -184,6 +184,7 @@ export function Commodities({ data, refetch, refreshComponent }) {
                             <TableRow key={commodity.id}>
                                 <TableCell>{commodity.displayName}</TableCell>
                                 <TableCell>{commodity.value}</TableCell>
+                                <TableCell>{commodity.value}</TableCell>
                             </TableRow>
                         )
                     })}
