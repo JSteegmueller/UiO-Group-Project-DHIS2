@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDataMutation } from "@dhis2/app-runtime";
 import {
     Table,
@@ -68,6 +68,7 @@ export function Commodities({ data, refetch, refreshComponent }) {
     const [amount, setAmount] = useState({});
     const [selected, setSelected] = useState([]);
     const [mutate, { loading, error }] = useDataMutation(dataMutationQuery);
+    const [confirmed, setConfirmed ] = useState(false);
 
     const handleConfirmClick = async () => {
         Object.entries(amount).map((commodity) => {
@@ -164,10 +165,30 @@ export function Commodities({ data, refetch, refreshComponent }) {
                     })}
                 </TableBody>
             </Table>
-            <br></br>
             <Button name="confirm" onClick={handleConfirmClick} primary value="default">
                 Confirm
             </Button>
+            <h3>Restocked commodities</h3>
+            <Table>
+                <TableHead>
+                    <TableRowHead>
+                        <TableCellHead>Commodity</TableCellHead>
+                        <TableCellHead>Previous stock</TableCellHead>
+                        <TableCellHead>Updated stock</TableCellHead>
+                        <TableCellHead></TableCellHead>
+                    </TableRowHead>
+                </TableHead>
+                <TableBody>
+                    {sortedData.map((commodity) => {
+                        return (
+                            <TableRow key={commodity.id}>
+                                <TableCell>{commodity.displayName}</TableCell>
+                                <TableCell>{commodity.value}</TableCell>
+                            </TableRow>
+                        )
+                    })}
+                </TableBody>
+            </Table>
         </div>
     );
 }
