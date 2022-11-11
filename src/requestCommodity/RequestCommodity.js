@@ -6,8 +6,9 @@ import "./RequestCommodityStyle.css";
 import {
   CircularLoader,
   DropdownButton,
-  MenuItem,
+  Button,
   FlyoutMenu,
+  MenuItem
 } from "@dhis2/ui";
 
 const orgUnitId = "Tht0fnjagHi";
@@ -98,6 +99,17 @@ function RequestCommodity(props) {
 
     return (
       <div>
+        <Button
+          name="BackButton"
+          onClick={() =>
+            props.activePageHandler(
+              props.commodityValue.sendBy === "Browse" ? "Browse" : "Dispensing"
+            )
+          }
+        >
+          Back
+        </Button>
+
         <h1>List of available stock in other organisations</h1>
         <div className="columns">
           <h3>Commodity: </h3>
