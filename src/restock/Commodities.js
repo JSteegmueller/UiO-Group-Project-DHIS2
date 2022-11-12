@@ -69,6 +69,7 @@ function mergeData(data) {
 export function Commodities({ data, refetch, refreshComponent }) {
     let mergedData = mergeData(data);
     let sortedData = mergedData.sort((a, b) => a.displayName.localeCompare(b.displayName));
+    console.log(sortedData)
     const [amount, setAmount] = useState({});
     const [selected, setSelected] = useState([]);
     const [mutate] = useDataMutation(dataMutationQuery);
@@ -182,18 +183,22 @@ export function Commodities({ data, refetch, refreshComponent }) {
                 <TableHead>
                     <TableRowHead>
                         <TableCellHead>Commodity</TableCellHead>
-                        <TableCellHead>Previous stock</TableCellHead>
+                        <TableCellHead>Restock amount</TableCellHead>
                         <TableCellHead>Updated stock</TableCellHead>
-                        <TableCellHead></TableCellHead>
+                        <TableCellHead>Date</TableCellHead>
                     </TableRowHead>
                 </TableHead>
                 <TableBody>
-                    {sortedData.map((commodity) => {
+                    {data.storage[0].map((commodity) => {
+                        let match = sortedData.find((v) => v.displayName === commodity[0]);
                         return (
-                            <TableRow key={commodity.id}>
-                                <TableCell>{commodity.displayName}</TableCell>
-                                <TableCell>{commodity.value}</TableCell>
-                                <TableCell>{commodity.value}</TableCell>
+                            <TableRow key={commodity}>
+                                <TableCell>{commodity[0]}</TableCell>
+                                <TableCell>{commodity[1]}</TableCell>
+                                <TableCell>
+                                    {match.value}
+                                </TableCell>
+                                <TableCell>{currentPeriod}</TableCell>
                             </TableRow>
                         );
                     })}
