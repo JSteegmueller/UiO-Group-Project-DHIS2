@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDataMutation, useDataQuery } from "@dhis2/app-runtime";
+import { useDataMutation } from "@dhis2/app-runtime";
 import {
     Table,
     TableRow,
@@ -69,7 +69,6 @@ function mergeData(data) {
 export function Commodities({ data, refetch, refreshComponent }) {
     let mergedData = mergeData(data);
     let sortedData = mergedData.sort((a, b) => a.displayName.localeCompare(b.displayName));
-    console.log(sortedData)
     const [amount, setAmount] = useState({});
     const [selected, setSelected] = useState([]);
     const [mutate] = useDataMutation(dataMutationQuery);
@@ -78,20 +77,40 @@ export function Commodities({ data, refetch, refreshComponent }) {
     const handleConfirmClick = async () => {
         const storage = data.storage;
         const restock = [];
-        Object.entries(amount).map((commodity) => {
-            restock.push([commodity[0], commodity[1]]);
-            let match = sortedData.find((v) => v.displayName === commodity[0]);
-            mutate({
-                value: Number(match.value) + Number(commodity[1]),
-                dataElement: match.id,
+        console.log(Object.entries(amount).length)
+
+        if(Object.entries(amount).length !== 0) {
+            Object.entries(amount).map((commodity) => {
+                restock.push([commodity[0], commodity[1]]);
+                let match = sortedData.find((v) => v.displayName === commodity[0]);
+                mutate({
+                    value: Number(match.value) + Number(commodity[1]),
+                    dataElement: match.id,
+                });
             });
-        });
-        storage.push(restock);
-        await mutateRestocks({ restock: storage });
-        setAmount({});
-        refetch();
-        refreshComponent();
+            storage.push(restock);
+            await mutateRestocks({ restock: storage });
+            refetch();
+            refreshComponent();
+        }  
     };
+
+    const handleDeselect = (commodity) => {
+        setSelected((current) =>
+            current.filter(
+                (c) => c !== commodity.displayName
+            )
+        )
+
+        let newObject = Object.keys(amount)
+        .filter(key => key != commodity.displayName)
+        .reduce((acc, key) => {
+            acc[key] = amount[key];
+            return acc;
+        }, {});
+        
+        setAmount(newObject)
+    }    
 
     return (
         <div>
@@ -157,17 +176,12 @@ export function Commodities({ data, refetch, refreshComponent }) {
                                                 </svg>
                                             }
                                             name="Icon small button"
-                                            onClick={() =>
-                                                setSelected((current) =>
-                                                    current.filter(
-                                                        (c) => c !== commodity.displayName
-                                                    )
-                                                )
-                                            }
+                                            onClick={() => handleDeselect(commodity)}
                                             destructive
                                             small
                                             value="default"
                                         />
+                                        {console.log(selected)}
                                     </TableCell>
                                 </TableRow>
                             );
@@ -189,19 +203,21 @@ export function Commodities({ data, refetch, refreshComponent }) {
                     </TableRowHead>
                 </TableHead>
                 <TableBody>
-                    {data.storage[0].map((commodity) => {
-                        let match = sortedData.find((v) => v.displayName === commodity[0]);
-                        return (
-                            <TableRow key={commodity}>
-                                <TableCell>{commodity[0]}</TableCell>
-                                <TableCell>{commodity[1]}</TableCell>
-                                <TableCell>
-                                    {match.value}
-                                </TableCell>
-                                <TableCell>{currentPeriod}</TableCell>
-                            </TableRow>
-                        );
-                    })}
+                    {
+                        data.storage[data.storage.length-1].map((commodity) => {
+                            let match = sortedData.find((v) => v.displayName === commodity[0]);
+                            return (
+                                <TableRow key={commodity}>
+                                    <TableCell>{commodity[0]}</TableCell>
+                                    <TableCell>{commodity[1]}</TableCell>
+                                    <TableCell>
+                                        {match.value}
+                                    </TableCell>
+                                    <TableCell>{currentPeriod}</TableCell>
+                                </TableRow>
+                            );
+                        })
+                    }
                 </TableBody>
             </Table>
         </div>
