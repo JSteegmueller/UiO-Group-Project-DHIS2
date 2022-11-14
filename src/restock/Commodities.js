@@ -12,6 +12,13 @@ import {
     Button,
     SingleSelect,
     SingleSelectOption,
+    AlertBar,
+    NoticeBox,
+    Modal,
+    ModalContent,
+    ModalActions,
+    ButtonStrip,
+    number,
 } from "@dhis2/ui";
 
 const date = new Date();
@@ -21,7 +28,8 @@ pDate.setDate(0);
 const currentPeriod = getPeriod(date);
 
 function getPeriod(date) {
-    return date.getFullYear().toString() + ("0" + (date.getMonth() + 1)).slice(-2);
+    return date.getFullYear().toString() + ("0" + (date.getMonth() + 1)).slice(-2)
+
 }
 
 const dataMutationQuery = {
@@ -77,11 +85,10 @@ export function Commodities({ data, refetch, refreshComponent }) {
     const handleConfirmClick = async () => {
         const storage = data.storage;
         const restock = [];
-        console.log(Object.entries(amount).length)
 
         if(Object.entries(amount).length !== 0) {
             Object.entries(amount).map((commodity) => {
-                restock.push([commodity[0], commodity[1]]);
+                restock.push([commodity[0], commodity[1], currentPeriod]);
                 let match = sortedData.find((v) => v.displayName === commodity[0]);
                 mutate({
                     value: Number(match.value) + Number(commodity[1]),
@@ -92,7 +99,7 @@ export function Commodities({ data, refetch, refreshComponent }) {
             await mutateRestocks({ restock: storage });
             refetch();
             refreshComponent();
-        }  
+        }
     };
 
     const handleDeselect = (commodity) => {
@@ -110,7 +117,18 @@ export function Commodities({ data, refetch, refreshComponent }) {
         }, {});
         
         setAmount(newObject)
-    }    
+    }
+
+    const removeAmount = (commodity) => {
+        let newObject = Object.keys(amount)
+        .filter(key => key != commodity.displayName)
+        .reduce((acc, key) => {
+            acc[key] = amount[key];
+            return acc;
+        }, {});
+        
+        setAmount(newObject)
+    }
 
     return (
         <div>
@@ -151,13 +169,19 @@ export function Commodities({ data, refetch, refreshComponent }) {
                                     <TableCell>
                                         <InputField
                                             onChange={(v) => {
-                                                setAmount((old) => ({
-                                                    ...old,
-                                                    [commodity.displayName]: v.value,
-                                                }));
+                                                if (v.value === '') {
+                                                    removeAmount(commodity)
+                                                } else {
+                                                    setAmount((old) => ({
+                                                        ...old,
+                                                        [commodity.displayName]: v.value,
+                                                    }));
+                                                }
                                             }}
                                             value={amount[commodity.displayName]}
-                                            placeholder="Number of packs to restock"
+                                            placeholder="Amount"
+                                            type="number"
+                                            min="1"
                                         />
                                     </TableCell>
                                     <TableCell>
@@ -181,7 +205,6 @@ export function Commodities({ data, refetch, refreshComponent }) {
                                             small
                                             value="default"
                                         />
-                                        {console.log(selected)}
                                     </TableCell>
                                 </TableRow>
                             );
@@ -189,10 +212,15 @@ export function Commodities({ data, refetch, refreshComponent }) {
                     })}
                 </TableBody>
             </Table>
-            <Button name="confirm" onClick={handleConfirmClick} primary value="default">
+            <Button 
+                name="confirm" 
+                onClick={handleConfirmClick} 
+                primary value="default"
+                disabled={selected.length === 0 || selected.length !== Object.keys(amount).length}
+            >
                 Confirm
             </Button>
-            <h3>Restocked commodities</h3>
+            <h3>Last restocked commodities</h3>
             <Table>
                 <TableHead>
                     <TableRowHead>
@@ -213,7 +241,7 @@ export function Commodities({ data, refetch, refreshComponent }) {
                                     <TableCell>
                                         {match.value}
                                     </TableCell>
-                                    <TableCell>{currentPeriod}</TableCell>
+                                    <TableCell>{commodity[2]}</TableCell>
                                 </TableRow>
                             );
                         })
