@@ -12,13 +12,11 @@ import {
     Button,
     SingleSelect,
     SingleSelectOption,
-    AlertBar,
-    NoticeBox,
     Modal,
     ModalContent,
     ModalActions,
     ButtonStrip,
-    number,
+    AlertBar,
 } from "@dhis2/ui";
 
 const date = new Date();
@@ -81,6 +79,8 @@ export function Commodities({ data, refetch, refreshComponent }) {
     const [selected, setSelected] = useState([]);
     const [mutate] = useDataMutation(dataMutationQuery);
     const [mutateRestocks] = useDataMutation(updateTransactionsMutation);
+    const [hideModal, sethideModal] = useState(true);
+    const [hideAlert, sethideAlert] = useState(true);
 
     const handleConfirmClick = async () => {
         const storage = data.storage;
@@ -96,11 +96,12 @@ export function Commodities({ data, refetch, refreshComponent }) {
                 });
             });
             storage.push(restock);
+            sethideAlert(false)
             await mutateRestocks({ restock: storage });
             refetch();
             refreshComponent();
         }
-    };
+    }
 
     const handleDeselect = (commodity) => {
         setSelected((current) =>
@@ -125,13 +126,35 @@ export function Commodities({ data, refetch, refreshComponent }) {
         .reduce((acc, key) => {
             acc[key] = amount[key];
             return acc;
-        }, {});
-        
+        }, {});   
+
         setAmount(newObject)
     }
 
     return (
         <div>
+            <Modal 
+                small
+                hide = {hideModal} 
+                position="middle"
+            >
+                <ModalContent>
+                    Are you sure you want to proceed?
+                </ModalContent>
+                <ModalActions>
+                    <ButtonStrip end>
+                        <Button onClick={() => sethideModal(true)} Cancel>
+                            Cancel
+                        </Button>
+                        <Button 
+                            onClick={handleConfirmClick} Confirm
+                                primary value="default">
+                            Confirm
+                        </Button>
+                    </ButtonStrip>
+                </ModalActions>
+            </Modal>
+
             <h1>Restock commodities</h1>
             <SingleSelect
                 className="select"
@@ -214,12 +237,13 @@ export function Commodities({ data, refetch, refreshComponent }) {
             </Table>
             <Button 
                 name="confirm" 
-                onClick={handleConfirmClick} 
+                onClick={() => sethideModal(false)}
                 primary value="default"
                 disabled={selected.length === 0 || selected.length !== Object.keys(amount).length}
             >
                 Confirm
             </Button>
+
             <h3>Last restocked commodities</h3>
             <Table>
                 <TableHead>
@@ -248,6 +272,14 @@ export function Commodities({ data, refetch, refreshComponent }) {
                     }
                 </TableBody>
             </Table>
+
+            <AlertBar 
+                success
+                hidden = {hideAlert}
+                duration = {8000}
+            >
+                Successfully restocked commodities.
+            </AlertBar>
         </div>
     );
 }
