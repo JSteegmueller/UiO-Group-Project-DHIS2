@@ -210,7 +210,7 @@ export function Commodities({ data, refetch, refreshComponent }) {
                                                 }
                                             }}
                                             value={amount[commodity.displayName]}
-                                            placeholder="Amount INT"
+                                            placeholder="Amount"
                                             type="number"
                                             min="1"
                                         />
@@ -271,7 +271,7 @@ export function Commodities({ data, refetch, refreshComponent }) {
                                     <TableCell>{commodity[0]}</TableCell>
                                     <TableCell>{commodity[1]}</TableCell>
                                     <TableCell>{match.value}</TableCell>
-                                    <TableCell>{commodity[2]}</TableCell>
+                                    <TableCell>{commodity[2].slice(4) + "/" + commodity[2].slice(0,4)}</TableCell>
                                 </TableRow>
                             )
                         })
