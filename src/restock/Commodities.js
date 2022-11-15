@@ -159,9 +159,12 @@ export function Commodities({ data, refetch, refreshComponent }) {
             <SingleSelect
                 className="select"
                 filterable
+                filterPlaceholder="Search commodities"
                 placeholder="Select commodities to restock"
                 noMatchText="No match found"
-                onChange={({ selected }) => setSelected((old) => [...old, selected])}
+                onChange={({ selected }) => {
+                    setSelected((old) => [...old, selected])}
+                }
             >
                 {sortedData.map((commodity) => {
                     return (
