@@ -22,12 +22,10 @@ import {
 const date = new Date();
 const pDate = new Date(date);
 pDate.setDate(0);
-
 const currentPeriod = getPeriod(date);
 
 function getPeriod(date) {
     return date.getFullYear().toString() + ("0" + (date.getMonth() + 1)).slice(-2)
-
 }
 
 const dataMutationQuery = {
@@ -63,7 +61,6 @@ function mergeData(data) {
                 return true;
             }
         });
-
         return {
             displayName: commodity.dataElement.displayName.split(" - ")[1],
             id: commodity.dataElement.id,
@@ -76,11 +73,11 @@ export function Commodities({ data, refetch, refreshComponent }) {
     let mergedData = mergeData(data);
     let sortedData = mergedData.sort((a, b) => a.displayName.localeCompare(b.displayName));
     const [amount, setAmount] = useState({});
-    const [selected, setSelected] = useState([]);
+    const [allSelected, setAllSelected] = useState([]);
     const [mutate] = useDataMutation(dataMutationQuery);
     const [mutateRestocks] = useDataMutation(updateTransactionsMutation);
-    const [hideModal, sethideModal] = useState(true);
-    const [hideAlert, sethideAlert] = useState(true);
+    const [hideModal, setHideModal] = useState(true);
+    const [hideAlert, setHideAlert] = useState(true);
 
     const handleConfirmClick = async () => {
         const storage = data.storage;
@@ -96,27 +93,35 @@ export function Commodities({ data, refetch, refreshComponent }) {
                 });
             });
             storage.push(restock);
-            sethideAlert(false)
+            setHideAlert(false)
             await mutateRestocks({ restock: storage });
             refetch();
             refreshComponent();
         }
     }
 
+    const handleSelect = (selected) => {
+        let b = true        
+        for(let i = 0; i < allSelected.length; i++)
+            if (allSelected[i] === selected) b = false
+        
+        if(b === true) 
+            setAllSelected((old) => [...old, selected]) 
+    }
+
     const handleDeselect = (commodity) => {
-        setSelected((current) =>
+        setAllSelected((current) =>
             current.filter(
                 (c) => c !== commodity.displayName
             )
         )
-
         let newObject = Object.keys(amount)
         .filter(key => key != commodity.displayName)
         .reduce((acc, key) => {
             acc[key] = amount[key];
             return acc;
         }, {});
-        
+
         setAmount(newObject)
     }
 
@@ -143,7 +148,7 @@ export function Commodities({ data, refetch, refreshComponent }) {
                 </ModalContent>
                 <ModalActions>
                     <ButtonStrip end>
-                        <Button onClick={() => sethideModal(true)} Cancel>
+                        <Button onClick={() => setHideModal(true)} Cancel>
                             Cancel
                         </Button>
                         <Button 
@@ -162,8 +167,8 @@ export function Commodities({ data, refetch, refreshComponent }) {
                 filterPlaceholder="Search commodities"
                 placeholder="Select commodities to restock"
                 noMatchText="No match found"
-                onChange={({ selected }) => {
-                    setSelected((old) => [...old, selected])}
+                onChange={({selected}) => {
+                    handleSelect(selected)}
                 }
             >
                 {sortedData.map((commodity) => {
@@ -187,7 +192,7 @@ export function Commodities({ data, refetch, refreshComponent }) {
                 </TableHead>
                 <TableBody>
                     {sortedData.map((commodity) => {
-                        if (selected.includes(commodity.displayName)) {
+                        if (allSelected.includes(commodity.displayName)) {
                             return (
                                 <TableRow key={commodity.id}>
                                     <TableCell>{commodity.displayName}</TableCell>
@@ -205,7 +210,7 @@ export function Commodities({ data, refetch, refreshComponent }) {
                                                 }
                                             }}
                                             value={amount[commodity.displayName]}
-                                            placeholder="Amount"
+                                            placeholder="Amount INT"
                                             type="number"
                                             min="1"
                                         />
@@ -240,9 +245,9 @@ export function Commodities({ data, refetch, refreshComponent }) {
             </Table>
             <Button 
                 name="confirm" 
-                onClick={() => sethideModal(false)}
+                onClick={() => setHideModal(false)}
                 primary value="default"
-                disabled={selected.length === 0 || selected.length !== Object.keys(amount).length}
+                disabled={allSelected.length === 0 || allSelected.length !== Object.keys(amount).length}
             >
                 Confirm
             </Button>
@@ -258,19 +263,17 @@ export function Commodities({ data, refetch, refreshComponent }) {
                     </TableRowHead>
                 </TableHead>
                 <TableBody>
-                    {
+                    {                        
                         data.storage[data.storage.length-1].map((commodity) => {
                             let match = sortedData.find((v) => v.displayName === commodity[0]);
                             return (
                                 <TableRow key={commodity}>
                                     <TableCell>{commodity[0]}</TableCell>
                                     <TableCell>{commodity[1]}</TableCell>
-                                    <TableCell>
-                                        {match.value}
-                                    </TableCell>
+                                    <TableCell>{match.value}</TableCell>
                                     <TableCell>{commodity[2]}</TableCell>
                                 </TableRow>
-                            );
+                            )
                         })
                     }
                 </TableBody>

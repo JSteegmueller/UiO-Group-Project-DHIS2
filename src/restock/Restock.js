@@ -13,8 +13,6 @@ function getPeriod(date) {
     return date.getFullYear().toString() + ("0" + (date.getMonth() + 1)).slice(-2);
 }
 
-const categoryOptionComboEndBalance = "J2Qf1jtZuj8";
-
 const dataQuery = {
     dataSets: {
         resource: "dataSets/ULowA8V3ucd",
