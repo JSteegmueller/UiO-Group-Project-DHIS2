@@ -24,6 +24,11 @@ function Navigation(props) {
                 active={props.activePage === "Browse"}
                 onClick={() => props.activePageHandler("Browse")}
             />
+            <MenuItem
+                label="Recount"
+                active={props.activePage === "Recount"}
+                onClick={() => props.activePageHandler("Recount")}
+            />
         </Menu>
     );
 }

@@ -4,6 +4,7 @@ import Navigation from "./Navigation";
 import Browse from "./browse/Browse";
 import Dashboard from "./dashboard/Dashboard";
 import Dispensing from "./dispensing/Dispensing";
+import { Recount } from "./recount/Recount";
 import RequestCommodity from "./requestCommodity/RequestCommodity";
 import TransactionTable from "./transactionHistory/TransactionTable";
 
@@ -33,6 +34,7 @@ function MyApp() {
                 {activePage === "RequestCommodity" && (
                     <RequestCommodity commodityValue={commodityValue} activePageHandler={activePageHandler}/>
                 )}
+                {activePage === "Recount" && <Recount />}
             </div>
         </div>
     );
