@@ -136,6 +136,14 @@ export function Commodities({ data, refetch, refreshComponent }) {
         setAmount(newObject)
     }
 
+    const addAll = () => {
+        sortedData.map((commodity) => {
+            if(!allSelected.includes(commodity.displayName)){
+                setAllSelected((old) => [...old, commodity.displayName])
+            }
+        })
+    }
+
     return (
         <div>
             <Modal 
@@ -213,6 +221,7 @@ export function Commodities({ data, refetch, refreshComponent }) {
                                             placeholder="Amount"
                                             type="number"
                                             min="1"
+                                            inputWidth="100px"
                                         />
                                     </TableCell>
                                     <TableCell>
@@ -251,6 +260,14 @@ export function Commodities({ data, refetch, refreshComponent }) {
             >
                 Confirm
             </Button>
+            <Button 
+                name="addAll" 
+                onClick={() => addAll()}
+                primary value="default"
+                disabled={allSelected.length === data.dataSets.dataSetElements.length}
+            >
+                Add All
+            </Button>
 
             <h3>Last restocked commodities</h3>
             <Table>
@@ -278,6 +295,7 @@ export function Commodities({ data, refetch, refreshComponent }) {
                     }
                 </TableBody>
             </Table>
+            <br></br>
 
             <AlertBar 
                 success
