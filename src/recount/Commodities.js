@@ -223,6 +223,7 @@ export function Commodities({ data, refetch, refreshComponent }) {
                                             placeholder="Amount"
                                             type="number"
                                             min="1"
+                                            inputWidth="100px"
                                         />
                                     </TableCell>
                                     <TableCell>
