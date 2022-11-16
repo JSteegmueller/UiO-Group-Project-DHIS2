@@ -36,6 +36,11 @@ function Navigation(props) {
                     props.activePageHandler("Restock");
                 }}
             />
+            <MenuItem
+                label="Recount"
+                active={props.activePage === "Recount"}
+                onClick={() => props.activePageHandler("Recount")}
+            />
         </Menu>
     );
 }

@@ -5,6 +5,7 @@ import Browse from "./browse/Browse";
 import Dashboard from "./dashboard/Dashboard";
 import Restock from "./restock/Restock";
 import Dispensing from "./dispensing/Dispensing";
+import { Recount } from "./recount/Recount";
 import RequestCommodity from "./requestCommodity/RequestCommodity";
 import { IconApps24 } from "@dhis2/ui";
 import "./AppStyle.css";
@@ -55,6 +56,7 @@ function MyApp() {
                         activePageHandler={activePageHandler}
                     />
                 )}
+                {activePage === "Recount" && <Recount />}
             </div>
         </div>
     );
