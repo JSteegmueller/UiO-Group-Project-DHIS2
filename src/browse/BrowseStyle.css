@@ -1,42 +1,42 @@
 .userCards {
-  display: flex;
-  margin-bottom: 1rem;
+    display: flex;
+    margin-bottom: 1rem;
 }
 
 .userCard {
-  background: rgb(232, 237, 242);
-  border: 1px solid rgb(232, 237, 242);
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  min-width: 350px;
-}
-
-.userCard:first-child {
-  margin-right: 1rem;
-}
-
-.colorsText {
-  color: rgb(13, 71, 161);
-}
-.searchBar {
-  margin-bottom: 1rem;
-}
-.outerContainer {
-  margin-bottom: 1rem;
-}
-@media (max-width: 760px) {
-  .userCards {
-    flex-direction: column;
-  }
-  .userCard {
     background: rgb(232, 237, 242);
     border: 1px solid rgb(232, 237, 242);
     padding: 0.5rem 1rem;
     border-radius: 5px;
-    min-width: 100%;
-  }
-  .userCard:first-child {
-    margin-right: 0rem;
+    min-width: 350px;
+}
+
+.userCard:first-child {
+    margin-right: 1rem;
+}
+
+.colorsText {
+    color: rgb(13, 71, 161);
+}
+.searchBar {
     margin-bottom: 1rem;
-  }
+}
+.outerContainer {
+    margin-bottom: 1rem;
+}
+@media (max-width: 960px) {
+    .userCards {
+        flex-direction: column;
+    }
+    .userCard {
+        background: rgb(232, 237, 242);
+        border: 1px solid rgb(232, 237, 242);
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        min-width: 100%;
+    }
+    .userCard:first-child {
+        margin-right: 0rem;
+        margin-bottom: 1rem;
+    }
 }
