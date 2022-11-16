@@ -21,11 +21,11 @@ function Navigation(props) {
                 }}
             />
             <MenuItem
-                label="Browse"
-                active={props.activePage === "Browse"}
+                label="Stock"
+                active={props.activePage === "Stock"}
                 onClick={() => {
                     props.activeMobile();
-                    props.activePageHandler("Browse");
+                    props.activePageHandler("Stock");
                 }}
             />
             <MenuItem

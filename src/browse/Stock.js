@@ -4,9 +4,9 @@ import { date, nextRestock, currentPeriod } from "./helper/getDates";
 import { request, mutateBalance, mutateLastUpdated } from "./helper/requests";
 import { useDataQuery, useDataMutation } from "@dhis2/app-runtime";
 import { CircularLoader, AlertBar } from "@dhis2/ui";
-import "./BrowseStyle.css";
+import "./StockStyle.css";
 
-function Browse({ requestHandler }) {
+function Stock({ requestHandler }) {
     const { loading, error, data, refetch } = useDataQuery(request);
     const [mutateB] = useDataMutation(mutateBalance);
     const [mutateL] = useDataMutation(mutateLastUpdated);
@@ -36,7 +36,7 @@ function Browse({ requestHandler }) {
         }
         return (
             <div className="outerContainer">
-                <h1>Browse</h1>
+                <h1>Stock</h1>
                 <div className="userCards">
                     <div className="userCard">
                         <p>
@@ -61,4 +61,4 @@ function Browse({ requestHandler }) {
     }
 }
 
-export default Browse;
+export default Stock;

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { InputField } from "@dhis2/ui";
-import "./BrowseStyle.css";
-
+import "./StockStyle.css";
 
 function SearchBar({ fullTable, setTableData }) {
     const [inputText, setInputText] = useState("");

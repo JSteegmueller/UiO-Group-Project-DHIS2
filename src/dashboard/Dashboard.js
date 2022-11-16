@@ -16,7 +16,7 @@ function Dashboard({ activePageHandler, requestHandler }) {
     const [saveSettings] = useDataMutation(mutateSettings);
     const components = { User, Clock, Stock, History, Restock, Recount };
     const redirect = {
-        Stock: "Browse",
+        Stock: "Stock",
         History: "Dispensing",
         Restock: "Restock",
         Recount: "Recount",

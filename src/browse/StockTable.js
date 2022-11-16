@@ -93,7 +93,7 @@ function StockTable({ data, period, requestHandler }) {
                                                 label: k,
                                                 period: period,
                                                 commoditiesValueSet: fullTable,
-                                                sendBy: "Browse",
+                                                sendBy: "Stock",
                                             })
                                         }
                                     >

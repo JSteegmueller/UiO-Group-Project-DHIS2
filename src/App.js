@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import classes from "./App.module.css";
 import Navigation from "./Navigation";
-import Browse from "./browse/Browse";
+import Stock from "./browse/Stock";
 import Dashboard from "./dashboard/Dashboard";
 import Restock from "./restock/Restock";
 import Dispensing from "./dispensing/Dispensing";
@@ -48,7 +48,7 @@ function MyApp() {
                     />
                 )}
                 {activePage === "Dispensing" && <Dispensing requestHandler={requestHandler} />}
-                {activePage === "Browse" && <Browse requestHandler={requestHandler} />}
+                {activePage === "Stock" && <Stock requestHandler={requestHandler} />}
                 {activePage === "Restock" && <Restock />}
                 {activePage === "RequestCommodity" && (
                     <RequestCommodity
