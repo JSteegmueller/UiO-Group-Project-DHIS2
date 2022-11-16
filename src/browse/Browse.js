@@ -39,8 +39,6 @@ function Browse({ requestHandler }) {
       setLock(true);
     }
 
-    let dataLastUpdated = data.lastUpdated.toString();
-
     return (
       <div className="outerContainer">
         <h1>Browse</h1>
@@ -50,11 +48,9 @@ function Browse({ requestHandler }) {
               User: <span className="colorsText">{data.user.name}</span>
             </p>
             <p>Organization: {data.organization.displayName}</p>
-            <p>Days until next restock: {nextRestock}</p>
           </div>
           <div className="userCard">
-            <p>Table Month: {dataLastUpdated.replace(/.{4}/, "$&-")}</p>
-            <p>Current Month: {currentPeriod.replace(/.{4}/, "$&-")}</p>
+            <p>Days until next restock: {nextRestock}</p>
             <p>Current Date: {date.toJSON().split("T")[0]}</p>
           </div>
         </div>
