@@ -84,7 +84,8 @@ function StockTable({ data, period, requestHandler }) {
                                 <DataTableCell>{v["Balance"]}</DataTableCell>
                                 <DataTableCell>
                                     <Button
-                                        primary
+                                        primary={v["Balance"] > 0}
+                                        destructive={v["Balance"] == 0}
                                         small
                                         onClick={() =>
                                             requestHandler("RequestCommodity", {

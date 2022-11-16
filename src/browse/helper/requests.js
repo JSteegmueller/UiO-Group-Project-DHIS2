@@ -39,7 +39,7 @@ export const request = {
     user: {
         resource: "/me",
         params: {
-            fields: "id,name,organisationUnits",
+            fields: "id,name,introduction,nationality,employer,email,userCredentials[lastLogin],organisationUnits",
         },
     },
 };
@@ -53,7 +53,7 @@ export const mutateLastUpdated = {
 export const mutateBalance = {
     resource: "/dataValueSets",
     dataSet: "ULowA8V3ucd",
-    data: ({ updatedBalance }) => ({
+    data: (updatedBalance) => ({
         orgUnit: process.env.REACT_APP_ORGUNIT,
         period: currentPeriod,
         dataValues: updatedBalance,

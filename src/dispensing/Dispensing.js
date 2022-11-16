@@ -1,7 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import TransactionForm from "./TransactionForm";
-import {useDataMutation, useDataQuery} from "@dhis2/app-runtime";
-import {createTransactionKeyMutation, getTransactionsQuery, updateTransactionsMutation,} from "./api/transactions";
+import { useDataMutation, useDataQuery } from "@dhis2/app-runtime";
+import {
+    createTransactionKeyMutation,
+    getTransactionsQuery,
+    updateTransactionsMutation,
+} from "./api/transactions";
 import {
     getConsumptionQuery,
     getEndBalanceQuery,
@@ -15,9 +19,9 @@ import {TransactionStatus} from "./helper/Transaction";
 import TransactionTable from "./TransactionTable";
 import {Button} from "@dhis2/ui";
 
-function Dispensing({requestHandler}) {
+function Dispensing({ requestHandler }) {
     const onConsumptionQueryError = (error) => {
-        let {httpStatusCode} = error.details;
+        let { httpStatusCode } = error.details;
         if (httpStatusCode !== 409) {
             let message = `Error fetching consumption for commodity ${selectedCommodity.name} in period ${currentPeriod}`;
             alert(message);
@@ -30,7 +34,7 @@ function Dispensing({requestHandler}) {
     };
 
     const onBalanceQueryError = (error) => {
-        let {httpStatusCode} = error.details;
+        let { httpStatusCode } = error.details;
         if (httpStatusCode === 409) {
             let message = `No stock data for commodity ${selectedCommodity.name} in period ${currentPeriod}!`;
             alert(message);
@@ -56,9 +60,7 @@ function Dispensing({requestHandler}) {
         lazy: true,
     });
 
-    const [createTransactionKey, {}] = useDataMutation(
-        createTransactionKeyMutation
-    );
+    const [createTransactionKey, {}] = useDataMutation(createTransactionKeyMutation);
     const [updateTransactions, {}] = useDataMutation(updateTransactionsMutation);
     const [setEndBalance, {}] = useDataMutation(setEndBalanceMutation);
     const [setConsumption, {}] = useDataMutation(setConsumptionMutation);
@@ -103,14 +105,14 @@ function Dispensing({requestHandler}) {
         } else {
             pending.push(transaction);
         }
-        writeTransactionsToLocal(pending)
+        writeTransactionsToLocal(pending);
         setPendingTransactions(pending);
     };
 
     const removeTransactionFromPending = (index) => {
         const pending = Array.from(pendingTransactions);
         pending.splice(index, 1);
-        writeTransactionsToLocal(pending)
+        writeTransactionsToLocal(pending);
         setPendingTransactions(pending);
     };
 
@@ -128,9 +130,9 @@ function Dispensing({requestHandler}) {
         let date = Date.now();
         for (const transaction of pendingTransactions) {
             transaction.date = date;
-            transaction.status = TransactionStatus.submitting
+            transaction.status = TransactionStatus.submitting;
             await submitTransaction(transaction);
-            transaction.status = TransactionStatus.submitted
+            transaction.status = TransactionStatus.submitted;
         }
         setTimeout(clearTransactions, 2000)
         refetchSelectedCommodity()
@@ -157,7 +159,6 @@ function Dispensing({requestHandler}) {
         refetchSelectedCommodity()
         setSubmitDisabled(false);
     }
-
 
     const submitToDataValueSet = async (transaction) => {
         await submitEndBalance(transaction);
@@ -188,11 +189,11 @@ function Dispensing({requestHandler}) {
 
     const submitToDataStore = async (transaction) => {
         if (transactionQuery.data) {
-            let {transactions} = transactionQuery.data;
+            let { transactions } = transactionQuery.data;
             transactions.unshift(transaction);
-            await updateTransactions({transactions});
+            await updateTransactions({ transactions });
         } else {
-            await createTransactionKey({transaction});
+            await createTransactionKey({ transaction });
         }
     };
 
