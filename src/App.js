@@ -6,36 +6,55 @@ import Dashboard from "./dashboard/Dashboard";
 import Dispensing from "./dispensing/Dispensing";
 import RequestCommodity from "./requestCommodity/RequestCommodity";
 import TransactionTable from "./transactionHistory/TransactionTable";
+import { IconApps24 } from "@dhis2/ui";
+import "./AppStyle.css";
 
 function MyApp() {
-    const [activePage, setActivePage] = useState("Dashboard");
-    const [commodityValue, setCommodityValue] = useState([]);
+  const [activePage, setActivePage] = useState("Dashboard");
+  const [activeMobile, setActiveMobile] = useState(false);
+  const [commodityValue, setCommodityValue] = useState([]);
 
-    function activePageHandler(page) {
-        setActivePage(page);
-    }
+  const mobileMenu = () => {
+    setActiveMobile(activeMobile ? false : true);
+  }
 
-    function requestHandler(page, value) {
-        setActivePage(page);
-        setCommodityValue(value);
-    }
+  function activePageHandler(page) {
+    setActivePage(page);
+  }
 
-    return (
-        <div className={classes.container}>
-            <div className={classes.left}>
-                <Navigation activePage={activePage} activePageHandler={activePageHandler} />
-            </div>
-            <div className={classes.right}>
-                {activePage === "Dashboard" && <Dashboard />}
-                {activePage === "Dispensing" && <Dispensing requestHandler={requestHandler} />}
-                {activePage === "History" && <TransactionTable />}
-                {activePage === "Browse" && <Browse requestHandler={requestHandler} />}
-                {activePage === "RequestCommodity" && (
-                    <RequestCommodity commodityValue={commodityValue} activePageHandler={activePageHandler}/>
-                )}
-            </div>
-        </div>
-    );
+  function requestHandler(page, value) {
+    setActivePage(page);
+    setCommodityValue(value);
+  }
+
+  return (
+    <div className={`${classes.container} ${activeMobile ? "showMenu": ""}`}>
+      <div className={`mobileMenu`} onClick={mobileMenu}>
+        <IconApps24 color="rgb(44, 102, 147)" />
+      </div>
+      <div className={`leftAppContainer ${classes.left}`} onClick={mobileMenu}>
+        <Navigation
+          activePage={activePage}
+          activePageHandler={activePageHandler}
+          activeMobile={mobileMenu}
+        />
+      </div>
+      <div className={classes.right} onClick={mobileMenu}>
+        {activePage === "Dashboard" && <Dashboard />}
+        {activePage === "Dispensing" && (
+          <Dispensing requestHandler={requestHandler} />
+        )}
+        {activePage === "History" && <TransactionTable />}
+        {activePage === "Browse" && <Browse requestHandler={requestHandler} />}
+        {activePage === "RequestCommodity" && (
+          <RequestCommodity
+            commodityValue={commodityValue}
+            activePageHandler={activePageHandler}
+          />
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default MyApp;

@@ -1,0 +1,29 @@
+.mobileMenu {
+  display: none;
+}
+@media (max-width: 760px) {
+  .mobileMenu {
+    display: inline;
+    z-index: 101;
+    position: absolute;
+    left: auto;
+    right: 1rem;
+    top: calc(48px + 1rem)
+  }
+  .leftAppContainer {
+    position: absolute;
+    width: 35%;
+    min-height: calc(100vh - 48px);
+    background: white;
+    border-right: 1px solid #ededed;
+    z-index: 100;
+    left: calc(0px - 35%);
+    transition: all 0.25s ease-in-out;
+  }
+  .showMenu .leftAppContainer{
+    left: 0px;
+  }
+  .showMenu .mobileMenu svg{
+    fill: white;
+  }
+}
