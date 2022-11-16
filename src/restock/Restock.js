@@ -36,7 +36,7 @@ const dataQuery = {
     },
 };
 
-export function Restock() {
+function Restock() {
     const { loading, error, data, refetch } = useDataQuery(dataQuery);
     const [refresh, setRefresh] = useState(false);
 
@@ -65,3 +65,5 @@ export function Restock() {
         );
     }
 }
+
+export default Restock;
