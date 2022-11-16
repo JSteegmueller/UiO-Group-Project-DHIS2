@@ -110,7 +110,7 @@ function RequestCommodity(props) {
           Back
         </Button>
 
-        <h1>List of available stock in other organisations</h1>
+        <h1>Request Commodity</h1>
         <div className="columns">
           <h3>Commodity: </h3>
           <DropdownButton

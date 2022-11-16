@@ -1,0 +1,44 @@
+.mobileMenu {
+  display: none;
+}
+@media (max-width: 760px) {
+  .App_right__Ucnue{
+    padding-top: 50px;
+  }
+  .mobileMenu {
+    display: inline;
+    z-index: 101;
+    position: absolute;
+    left: auto;
+    right: 1rem;
+    top: calc(48px + 1rem);
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    border: 1px solid rgb(44, 102, 147);
+  }
+  .leftAppContainer {
+    position: absolute;
+    padding-top: 2.5rem;
+    width: 200px;
+    min-height: calc(100vh - 48px);
+    background: white;
+    border-right: 1px solid #ededed;
+    z-index: 100;
+    left: auto;
+    right: calc(0px - 200px);
+    transition: all 0.25s ease-in-out;
+  }
+  .showMenu .leftAppContainer {
+    right: 0px;
+  }
+  .showMenu .mobileMenu svg path {
+    fill: white;
+  }
+  .showMenu .mobileMenu {
+    background: rgb(44, 102, 147);
+  }
+}

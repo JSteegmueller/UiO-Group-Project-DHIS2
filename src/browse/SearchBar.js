@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { InputField } from "@dhis2/ui";
+import "./BrowseStyle.css";
+
 
 function SearchBar({ fullTable, setTableData }) {
     const [inputText, setInputText] = useState("");
@@ -12,7 +14,7 @@ function SearchBar({ fullTable, setTableData }) {
     }
 
     return (
-        <div>
+        <div className="searchBar">
             <InputField
                 name="searchInput"
                 placeholder="Search commodities"
