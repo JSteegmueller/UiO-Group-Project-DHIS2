@@ -39,7 +39,7 @@ function MyApp() {
           activeMobile={mobileMenu}
         />
       </div>
-      <div className={classes.right} onClick={mobileMenu}>
+      <div className={classes.right}>
         {activePage === "Dashboard" && <Dashboard />}
         {activePage === "Dispensing" && (
           <Dispensing requestHandler={requestHandler} />

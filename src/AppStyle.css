@@ -12,12 +12,12 @@
   }
   .leftAppContainer {
     position: absolute;
-    width: 35%;
+    width: 200px;
     min-height: calc(100vh - 48px);
     background: white;
     border-right: 1px solid #ededed;
     z-index: 100;
-    left: calc(0px - 35%);
+    left: calc(0px - 200px);
     transition: all 0.25s ease-in-out;
   }
   .showMenu .leftAppContainer{

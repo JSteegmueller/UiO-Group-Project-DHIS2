@@ -1,6 +1,5 @@
 .userCards {
   display: flex;
-  flex-direction: space-between;
   margin-bottom: 1rem;
 }
 
@@ -22,6 +21,22 @@
 .searchBar {
   margin-bottom: 1rem;
 }
-.outerContainer{
+.outerContainer {
+  margin-bottom: 1rem;
+}
+@media (max-width: 760px) {
+  .userCards {
+    flex-direction: column;
+  }
+  .userCard {
+    background: rgb(232, 237, 242);
+    border: 1px solid rgb(232, 237, 242);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    min-width: 100%;
+  }
+  .userCard:first-child {
+    margin-right: 0rem;
     margin-bottom: 1rem;
+  }
 }
