@@ -8,11 +8,12 @@ import {
     setConsumptionMutation,
     setEndBalanceMutation,
 } from "./api/dataValues";
-import {getCurrentPeriod, remapCommoditiesForTransactionForm} from "./helper/HelperFunctions";
+import {getCurrentPeriod} from "./helper/HelperFunctions";
 import PendingTransactionTable from "./PendingTransactionTable";
 import {readTransactionsFromLocal, writeTransactionsToLocal} from "./helper/LocalStorage";
-import {FormAction} from "./helper/FormAction";
 import {TransactionStatus} from "./helper/Transaction";
+import TransactionTable from "./TransactionTable";
+import {Button} from "@dhis2/ui";
 
 function Dispensing({requestHandler}) {
     const onConsumptionQueryError = (error) => {
@@ -67,8 +68,6 @@ function Dispensing({requestHandler}) {
     const [selectedCommodity, setSelectedCommodity] = useState(null);
     const [submitDisabled, setSubmitDisabled] = useState(false);
     const [pendingTransactions, setPendingTransactions] = useState(readTransactionsFromLocal());
-    const [showCommodityRequest, setShowCommodityRequest] = useState(false);
-    const [commodities, setCommodities] = useState(null)
     const currentPeriod = getCurrentPeriod();
 
     useEffect(() => {
@@ -81,7 +80,6 @@ function Dispensing({requestHandler}) {
             commodity: selectedCommodity.id,
             period: currentPeriod,
         });
-        setShowCommodityRequest(false);
         setSubmitDisabled(false);
     }, [selectedCommodity]);
 
@@ -120,7 +118,6 @@ function Dispensing({requestHandler}) {
         let endBalance = transaction.endBalance;
         endBalance -= transaction.amount;
         if (endBalance < 0) {
-            setShowCommodityRequest(true);
             let message = `Not enough stock for ${transaction.commodity.name} in period ${currentPeriod}!`;
             throw new Error(message);
         }
@@ -135,36 +132,30 @@ function Dispensing({requestHandler}) {
             await submitTransaction(transaction);
             transaction.status = TransactionStatus.submitted
         }
-        setPendingTransactions([]);
-        writeTransactionsToLocal([])
-        setSelectedCommodity(null);
-        setSubmitDisabled(false);
-        setCommodityEndBalance(null)
+        setTimeout(clearTransactions, 2000)
+        refetchSelectedCommodity()
         await transactionQuery.refetch();
     };
 
-    const addTransaction = async ({transaction, action}) => {
+    const clearTransactions = () => {
+        setPendingTransactions([]);
+        writeTransactionsToLocal([])
+    }
+
+    const refetchSelectedCommodity = () => {
+        let selected = selectedCommodity;
+        setSelectedCommodity(null);
+        setSelectedCommodity(selected);
+    }
+
+    const addTransaction = async (transaction) => {
         setSubmitDisabled(true);
         transaction.endBalance = commodityEndBalance;
         transaction.consumption = commodityConsumption;
         checkAvailability(transaction);
-        if (action !== FormAction.add) {
-            setShowCommodityRequest(false);
-        }
         addTransactionToPending(transaction);
-        let selected = selectedCommodity;
-        setSelectedCommodity(null);
-        setSelectedCommodity(selected);
+        refetchSelectedCommodity()
         setSubmitDisabled(false);
-        if (action === FormAction.check) {
-            requestHandler("RequestCommodity", {
-                value: transaction.commodity.id,
-                label: transaction.commodity.name,
-                period: getCurrentPeriod(),
-                commoditiesValueSet: remapCommoditiesForTransactionForm(commodities),
-                sendBy: "TransactionForm",
-            });
-        }
     }
 
 
@@ -207,23 +198,51 @@ function Dispensing({requestHandler}) {
 
     return (
         <div>
-            <TransactionForm
-                addTransaction={addTransaction}
-                submitTransactions={submitTransactions}
-                amountLeft={commodityEndBalance}
-                commodityChanged={setSelectedCommodity}
-                disabled={submitDisabled}
-                reset={() => setPendingTransactions([])}
-                showCommodityRequest={showCommodityRequest}
-                requestHandler={requestHandler}
-                setCommodities={setCommodities}
-                transactionCount={pendingTransactions.length}
-            />
+            <div
+                style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(2, 1fr)",
+                    gridGap: 20,
+                }}
+            >
+                <TransactionForm
+                    addTransaction={addTransaction}
+                    amountLeft={commodityEndBalance}
+                    commodityChanged={setSelectedCommodity}
+                    requestHandler={requestHandler}
+                    transactionCount={pendingTransactions.length}
+                />
+                <div>
+                    <PendingTransactionTable
+                        pendingTransactions={pendingTransactions}
+                        onDelete={removeTransactionFromPending}
+                    />
+                    {
+                        pendingTransactions.length > 0 && <div>
+                            <Button
+                                disabled={submitDisabled}
+                                type="button"
+                                primary
+                                onClick={submitTransactions}
+                            >
+                                Submit Transaction
+                            </Button>
+                            <Button
+                                disabled={submitDisabled}
+                                type="button"
+                                primary
+                                onClick={clearTransactions}
+                            >
+                                Cancel Transaction
+                            </Button>
+                        </div>}
+                </div>
+            </div>
             <br/>
-            <PendingTransactionTable
-                pendingTransactions={pendingTransactions}
-                onDelete={removeTransactionFromPending}
-            />
+            <div>
+                <TransactionTable transactions={transactionQuery.data?.transactions}/>
+            </div>
+            <br/>
         </div>
     );
 }

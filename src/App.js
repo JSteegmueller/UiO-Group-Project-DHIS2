@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import classes from "./App.module.css";
 import Navigation from "./Navigation";
 import Browse from "./browse/Browse";
 import Dashboard from "./dashboard/Dashboard";
 import Dispensing from "./dispensing/Dispensing";
 import RequestCommodity from "./requestCommodity/RequestCommodity";
-import TransactionTable from "./transactionHistory/TransactionTable";
 import { IconApps24 } from "@dhis2/ui";
 import "./AppStyle.css";
 
@@ -44,7 +43,6 @@ function MyApp() {
         {activePage === "Dispensing" && (
           <Dispensing requestHandler={requestHandler} />
         )}
-        {activePage === "History" && <TransactionTable />}
         {activePage === "Browse" && <Browse requestHandler={requestHandler} />}
         {activePage === "RequestCommodity" && (
           <RequestCommodity

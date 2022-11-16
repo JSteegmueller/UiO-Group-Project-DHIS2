@@ -2,6 +2,7 @@ import React from "react";
 import {
     Box,
     Button,
+    CircularLoader,
     DataTable,
     DataTableCell,
     DataTableColumnHeader,
@@ -9,13 +10,30 @@ import {
     TableBody,
     TableHead
 } from "@dhis2/ui";
+import {TransactionStatus} from "./helper/Transaction";
+
+const statusToIcon = (status) => {
+    let html = ""
+    switch (status) {
+        case TransactionStatus.pending:
+            break
+        case TransactionStatus.submitting:
+            html = <CircularLoader small/>
+            break
+        case TransactionStatus.submitted:
+            html = "✅"
+            break
+    }
+    return html
+}
 
 function PendingTransactionTable({pendingTransactions, onDelete}) {
     if (!pendingTransactions) {
         return null
     }
     return <Box>
-        <DataTable>
+        <DataTable layout="fixed"
+                   scrollHeight="300px">
             <TableHead>
                 <DataTableRow>
                     <DataTableColumnHeader>
@@ -25,10 +43,10 @@ function PendingTransactionTable({pendingTransactions, onDelete}) {
                         Amount
                     </DataTableColumnHeader>
                     <DataTableColumnHeader>
-                        Delete
+                        Status
                     </DataTableColumnHeader>
                     <DataTableColumnHeader>
-                        Status
+                        Delete
                     </DataTableColumnHeader>
                 </DataTableRow>
             </TableHead>
@@ -39,15 +57,16 @@ function PendingTransactionTable({pendingTransactions, onDelete}) {
                             <DataTableCell>{transaction.commodity.name}</DataTableCell>
                             <DataTableCell>{transaction.amount}</DataTableCell>
                             <DataTableCell>
+                                {statusToIcon(transaction.status)}
+                            </DataTableCell>
+                            <DataTableCell>
                                 <Button
                                     primary
                                     small
+                                    disabled={transaction.status !== TransactionStatus.pending}
                                     onClick={() => onDelete(index)}>
                                     {String.fromCharCode(0x274C)}
                                 </Button>
-                            </DataTableCell>
-                            <DataTableCell>
-                                {transaction.status}
                             </DataTableCell>
                         </DataTableRow>
                     })
