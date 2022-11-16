@@ -85,8 +85,9 @@ export function Commodities({ data, refetch, refreshComponent }) {
 
         if (Object.entries(amount).length !== 0) {
             Object.entries(amount).map((commodity) => {
-                restock.push([commodity[0], commodity[1], date]);
                 let match = sortedData.find((v) => v.displayName === commodity[0]);
+                const newBalance = Number(commodity[1]) + Number(match.value);
+                restock.push([commodity[0], commodity[1], newBalance, date]);
                 mutate({
                     value: Number(match.value) + Number(commodity[1]),
                     dataElement: match.id,
@@ -276,9 +277,9 @@ export function Commodities({ data, refetch, refreshComponent }) {
                             <TableRow key={commodity}>
                                 <TableCell>{commodity[0]}</TableCell>
                                 <TableCell>{commodity[1]}</TableCell>
-                                <TableCell>{match.value}</TableCell>
+                                <TableCell>{commodity[2]}</TableCell>
                                 <TableCell>
-                                    {new Date(commodity[2]).toLocaleString("en-GB")}
+                                    {new Date(commodity[3]).toLocaleString("en-GB")}
                                 </TableCell>
                             </TableRow>
                         );

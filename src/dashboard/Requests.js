@@ -66,6 +66,6 @@ export const requestRestock = {
 export const requestRecount = {
     transactions: {
         resource: "dataStore",
-        id: "IN5320-G3/restocks",
+        id: "IN5320-G3/recounts",
     },
 };

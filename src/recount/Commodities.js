@@ -25,7 +25,7 @@ pDate.setDate(0);
 const currentPeriod = getPeriod(date);
 
 function getPeriod(date) {
-    return date.getFullYear().toString() + ("0" + (date.getMonth() + 1)).slice(-2)
+    return date.getFullYear().toString() + ("0" + (date.getMonth() + 1)).slice(-2);
 }
 
 const dataMutationQuery = {
@@ -83,87 +83,72 @@ export function Commodities({ data, refetch, refreshComponent }) {
         const storage = data.storage;
         const recount = [];
 
-        if(Object.entries(amount).length !== 0) {
+        if (Object.entries(amount).length !== 0) {
             Object.entries(amount).map((commodity) => {
                 let match = sortedData.find((v) => v.displayName === commodity[0]);
-                recount.push([commodity[0], match.value, currentPeriod]);
-                
+                recount.push([commodity[0], match.value, commodity[1], date]);
+
                 mutate({
                     value: Number(commodity[1]),
                     dataElement: match.id,
                 });
             });
             storage.push(recount);
-            setHideAlert(false)
+            setHideAlert(false);
             await mutateRestocks({ recount: storage });
             refetch();
             refreshComponent();
         }
-    }
+    };
 
     const handleSelect = (selected) => {
-        let b = true        
-        for(let i = 0; i < allSelected.length; i++)
-            if (allSelected[i] === selected) b = false
-        
-        if(b === true) 
-            setAllSelected((old) => [...old, selected]) 
-    }
+        let b = true;
+        for (let i = 0; i < allSelected.length; i++) if (allSelected[i] === selected) b = false;
+
+        if (b === true) setAllSelected((old) => [...old, selected]);
+    };
 
     const handleDeselect = (commodity) => {
-        setAllSelected((current) =>
-            current.filter(
-                (c) => c !== commodity.displayName
-            )
-        )
+        setAllSelected((current) => current.filter((c) => c !== commodity.displayName));
         let newObject = Object.keys(amount)
-        .filter(key => key != commodity.displayName)
-        .reduce((acc, key) => {
-            acc[key] = amount[key];
-            return acc;
-        }, {});
+            .filter((key) => key != commodity.displayName)
+            .reduce((acc, key) => {
+                acc[key] = amount[key];
+                return acc;
+            }, {});
 
-        setAmount(newObject)
-    }
+        setAmount(newObject);
+    };
 
     const removeAmount = (commodity) => {
         let newObject = Object.keys(amount)
-        .filter(key => key != commodity.displayName)
-        .reduce((acc, key) => {
-            acc[key] = amount[key];
-            return acc;
-        }, {});   
+            .filter((key) => key != commodity.displayName)
+            .reduce((acc, key) => {
+                acc[key] = amount[key];
+                return acc;
+            }, {});
 
-        setAmount(newObject)
-    }
+        setAmount(newObject);
+    };
 
     const addAll = () => {
         sortedData.map((commodity) => {
-            if(!allSelected.includes(commodity.displayName)){
-                setAllSelected((old) => [...old, commodity.displayName])
+            if (!allSelected.includes(commodity.displayName)) {
+                setAllSelected((old) => [...old, commodity.displayName]);
             }
-        })
-    }
+        });
+    };
 
     return (
         <div>
-            <Modal 
-                small
-                hide = {hideModal} 
-                position="middle"
-            >
-                <ModalContent>
-                    Are you sure you want to proceed?
-                </ModalContent>
+            <Modal small hide={hideModal} position="middle">
+                <ModalContent>Are you sure you want to proceed?</ModalContent>
                 <ModalActions>
                     <ButtonStrip end>
                         <Button onClick={() => setHideModal(true)} Cancel>
                             Cancel
                         </Button>
-                        <Button 
-                            onClick={handleConfirmClick} Confirm
-                            primary value="default"
-                        >
+                        <Button onClick={handleConfirmClick} Confirm primary value="default">
                             Confirm
                         </Button>
                     </ButtonStrip>
@@ -177,9 +162,9 @@ export function Commodities({ data, refetch, refreshComponent }) {
                 filterPlaceholder="Search commodities"
                 placeholder="Select commodities to recount"
                 noMatchText="No match found"
-                onChange={({selected}) => {
-                    handleSelect(selected)}
-                }
+                onChange={({ selected }) => {
+                    handleSelect(selected);
+                }}
             >
                 {sortedData.map((commodity) => {
                     return (
@@ -210,8 +195,8 @@ export function Commodities({ data, refetch, refreshComponent }) {
                                     <TableCell>
                                         <InputField
                                             onChange={(v) => {
-                                                if (v.value === '') {
-                                                    removeAmount(commodity)
+                                                if (v.value === "") {
+                                                    removeAmount(commodity);
                                                 } else {
                                                     setAmount((old) => ({
                                                         ...old,
@@ -254,18 +239,22 @@ export function Commodities({ data, refetch, refreshComponent }) {
                     })}
                 </TableBody>
             </Table>
-            <Button 
-                name="confirm" 
+            <Button
+                name="confirm"
                 onClick={() => setHideModal(false)}
-                primary value="default"
-                disabled={allSelected.length === 0 || allSelected.length !== Object.keys(amount).length}
+                primary
+                value="default"
+                disabled={
+                    allSelected.length === 0 || allSelected.length !== Object.keys(amount).length
+                }
             >
                 Confirm
             </Button>
-            <Button 
-                name="addAll" 
+            <Button
+                name="addAll"
                 onClick={() => addAll()}
-                primary value="default"
+                primary
+                value="default"
                 disabled={allSelected.length === data.dataSets.dataSetElements.length}
             >
                 Add All
@@ -282,28 +271,23 @@ export function Commodities({ data, refetch, refreshComponent }) {
                     </TableRowHead>
                 </TableHead>
                 <TableBody>
-                    {                        
-                        data.storage[data.storage.length-1].map((commodity) => {
-                            let match = sortedData.find((v) => v.displayName === commodity[0]);
-                            return (
-                                <TableRow key={commodity}>
-                                    <TableCell>{commodity[0]}</TableCell>
-                                    <TableCell>{commodity[1]}</TableCell>
-                                    <TableCell>{match.value}</TableCell>
-                                    <TableCell>{commodity[2].slice(4) + "/" + commodity[2].slice(0,4)}</TableCell>
-                                </TableRow>
-                            )
-                        })
-                    }
+                    {data.storage[data.storage.length - 1].map((commodity) => {
+                        return (
+                            <TableRow key={commodity}>
+                                <TableCell>{commodity[0]}</TableCell>
+                                <TableCell>{commodity[1]}</TableCell>
+                                <TableCell>{commodity[2]}</TableCell>
+                                <TableCell>
+                                    {new Date(commodity[3]).toLocaleString("en-GB")}
+                                </TableCell>
+                            </TableRow>
+                        );
+                    })}
                 </TableBody>
             </Table>
             <br></br>
 
-            <AlertBar 
-                success
-                hidden = {hideAlert}
-                duration = {8000}
-            >
+            <AlertBar success hidden={hideAlert} duration={8000}>
                 Successfully restocked commodities.
             </AlertBar>
         </div>

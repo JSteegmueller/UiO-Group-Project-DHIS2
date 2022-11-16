@@ -26,7 +26,7 @@ function Recount({ settings }) {
         const transactions = data.transactions;
         const length = transactions ? transactions.length : 0;
         const slicedTransactions = transactions ? transactions[length - page] : [];
-        const date = new Date(transactions ? transactions[length - 1][0][2] : null);
+        const date = new Date(transactions ? transactions[length - 1][0][3] : null);
         return (
             <div>
                 <p>
@@ -46,12 +46,12 @@ function Recount({ settings }) {
                         </TableRowHead>
                     </TableHead>
                     <TableBody>
-                        {slicedTransactions.map(([id, value, _]) => {
+                        {slicedTransactions.map(([id, value, updatedValue, _]) => {
                             return (
                                 <TableRow key={id}>
                                     <TableCell dense>{id}</TableCell>
-                                    <TableCell dense>???</TableCell>
                                     <TableCell dense>{value}</TableCell>
+                                    <TableCell dense>{updatedValue}</TableCell>
                                 </TableRow>
                             );
                         })}
