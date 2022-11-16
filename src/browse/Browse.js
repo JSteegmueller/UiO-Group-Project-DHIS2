@@ -3,7 +3,8 @@ import StockTable from "./StockTable";
 import { date, nextRestock, currentPeriod } from "./helper/getDates";
 import { request, mutateBalance, mutateLastUpdated } from "./helper/requests";
 import { useDataQuery, useDataMutation } from "@dhis2/app-runtime";
-import { CircularLoader } from "@dhis2/ui";
+import { CircularLoader, AlertBar } from "@dhis2/ui";
+import "./BrowseStyle.css";
 
 function Browse({ requestHandler }) {
     const { loading, error, data, refetch } = useDataQuery(request);
@@ -19,18 +20,14 @@ function Browse({ requestHandler }) {
                 categoryOptionCombo: i.categoryOptionCombo,
                 value: i.value,
             }));
-        await mutateB({ updatedBalance: updatedBalance });
+        await mutateB(updatedBalance);
         await mutateL();
         refetch();
     };
 
-    if (error) {
-        return <span>ERROR: {error.message}</span>;
-    }
+    if (error) return <span>ERROR: {error.message}</span>;
 
-    if (loading) {
-        return <CircularLoader large />;
-    }
+    if (loading) return <CircularLoader large />;
 
     if (data) {
         if (!lock && data.lastUpdated != currentPeriod) {
@@ -38,14 +35,21 @@ function Browse({ requestHandler }) {
             setLock(true);
         }
         return (
-            <div>
-                <p>User: {data.user.name}</p>
-                <p>Organization: {data.organization.displayName}</p>
-                <p>Table Month: {data.lastUpdated}</p>
-                <p>Current Month: {currentPeriod}</p>
-                <p>Current Date: {date.toJSON().split("T")[0]}</p>
-                <p>Days until next restock: {nextRestock}</p>
-                {lock && <p>Balance updated for the new month!</p>}
+            <div className="outerContainer">
+                <h1>Browse</h1>
+                <div className="userCards">
+                    <div className="userCard">
+                        <p>
+                            User: <span className="colorsText">{data.user.name}</span>
+                        </p>
+                        <p>Organization: {data.organization.displayName}</p>
+                    </div>
+                    <div className="userCard">
+                        <p>Days until next restock: {nextRestock}</p>
+                        <p>Current Date: {date.toLocaleDateString("en-GB")}</p>
+                    </div>
+                </div>
+                {lock && <AlertBar permanent>Balance updated for the new month!</AlertBar>}
                 <StockTable
                     key={data.lastUpdated}
                     data={data}
