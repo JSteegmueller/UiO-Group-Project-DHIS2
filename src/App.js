@@ -3,6 +3,7 @@ import classes from "./App.module.css";
 import Navigation from "./Navigation";
 import Browse from "./browse/Browse";
 import Dashboard from "./dashboard/Dashboard";
+import Restock from "./restock/Restock";
 import Dispensing from "./dispensing/Dispensing";
 import RequestCommodity from "./requestCommodity/RequestCommodity";
 import { IconApps24 } from "@dhis2/ui";
@@ -47,6 +48,7 @@ function MyApp() {
                 )}
                 {activePage === "Dispensing" && <Dispensing requestHandler={requestHandler} />}
                 {activePage === "Browse" && <Browse requestHandler={requestHandler} />}
+                {activePage === "Restock" && <Restock />}
                 {activePage === "RequestCommodity" && (
                     <RequestCommodity
                         commodityValue={commodityValue}
