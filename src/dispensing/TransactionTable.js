@@ -13,7 +13,7 @@ function TransactionTable({transactions}) {
         setSlicedTransactions(transactions.slice((page - 1) * pageSize, pageSize * page))
     }, [page, pageSize, transactions])
 
-    return <div>
+    return <div className="tableDispensing">
         <Table>
             <TableHead>
                 <TableRowHead>

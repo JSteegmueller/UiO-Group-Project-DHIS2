@@ -18,6 +18,8 @@ import {readTransactionsFromLocal, writeTransactionsToLocal} from "./helper/Loca
 import {TransactionStatus} from "./helper/Transaction";
 import TransactionTable from "./TransactionTable";
 import {Button} from "@dhis2/ui";
+import "./dispensingStyle.css";
+
 
 function Dispensing({ requestHandler }) {
     const onConsumptionQueryError = (error) => {
@@ -199,12 +201,7 @@ function Dispensing({ requestHandler }) {
 
     return (
         <div>
-            <div
-                style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(2, 1fr)",
-                    gridGap: 20,
-                }}
+            <div className={"mainDispensing"}
             >
                 <TransactionForm
                     addTransaction={addTransaction}
@@ -219,7 +216,7 @@ function Dispensing({ requestHandler }) {
                         onDelete={removeTransactionFromPending}
                     />
                     {
-                        pendingTransactions.length > 0 && <div>
+                        pendingTransactions.length > 0 && <div  className={"button-dispensing"}>
                             <Button
                                 disabled={submitDisabled}
                                 type="button"

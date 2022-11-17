@@ -8,7 +8,9 @@ import {
     DataTableColumnHeader,
     DataTableRow,
     TableBody,
-    TableHead
+    TableHead,
+    IconCross24,
+    IconCheckmarkCircle24
 } from "@dhis2/ui";
 import {TransactionStatus} from "./helper/Transaction";
 
@@ -21,7 +23,7 @@ const statusToIcon = (status) => {
             html = <CircularLoader small/>
             break
         case TransactionStatus.submitted:
-            html = "✅"
+            html = <IconCheckmarkCircle24 />
             break
     }
     return html
@@ -33,7 +35,7 @@ function PendingTransactionTable({pendingTransactions, onDelete}) {
     }
     return <Box>
         <DataTable layout="fixed"
-                   scrollHeight="300px">
+                   scrollHeight="12rem">
             <TableHead>
                 <DataTableRow>
                     <DataTableColumnHeader>
@@ -65,7 +67,7 @@ function PendingTransactionTable({pendingTransactions, onDelete}) {
                                     small
                                     disabled={transaction.status !== TransactionStatus.pending}
                                     onClick={() => onDelete(index)}>
-                                    {String.fromCharCode(0x274C)}
+                                    <IconCross24 />
                                 </Button>
                             </DataTableCell>
                         </DataTableRow>

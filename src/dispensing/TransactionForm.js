@@ -115,7 +115,7 @@ function TransactionForm(props) {
                 Add to Transaction
             </Button>
             {props.amountLeft != null && (props.amountLeft < amount || props.amountLeft <= 0) && (
-                <NoticeBox>
+                <NoticeBox className={"infobox-dispense"}>
                     Not enough stock for {commodity?.name}!
                     <br />
                     <Button type="button" primary small onClick={openRequestCommodity}>

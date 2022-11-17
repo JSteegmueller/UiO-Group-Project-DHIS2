@@ -4,7 +4,8 @@
 }
 
 .left {
-  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
   min-height: 100vh;
   padding-top: 20px;
 }

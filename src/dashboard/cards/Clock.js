@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Center, Switch } from "@dhis2/ui";
+import "../DashboardStyle.css";
 
 function Clock({ settings, saveSettings }) {
     const [date, setDate] = useState(new Date());
@@ -20,7 +21,6 @@ function Clock({ settings, saveSettings }) {
 
     return (
         <div>
-            <Switch label="24h" checked={settings.timeFormat} onChange={onChange} />
             <Center>
                 <h1>
                     {date.toLocaleTimeString(timeFormat, {
@@ -31,6 +31,7 @@ function Clock({ settings, saveSettings }) {
                 <h4>{date.toLocaleString([], { weekday: "long" })}</h4>
                 <h4>{date.toLocaleDateString("en-GB")}</h4>
             </Center>
+            <Switch label="24h" checked={settings.timeFormat} onChange={onChange} className="switchButton"/>
         </div>
     );
 }

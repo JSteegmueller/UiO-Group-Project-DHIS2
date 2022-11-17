@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useDataQuery } from "@dhis2/app-runtime";
 import { CircularLoader } from "@dhis2/ui";
 import { Commodities } from "./Commodities";
+import "../restockAndRecountStyle.css";
+
 
 const date = new Date();
 const pDate = new Date(date);

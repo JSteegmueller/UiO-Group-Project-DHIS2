@@ -46,7 +46,7 @@ function Stock({ settings, saveSettings, requestHandler }) {
                         onChange={onChange}
                     />
                 </div>
-                <DataTable scrollHeight="290px">
+                <DataTable scrollHeight="260px">
                     <TableHead>
                         <DataTableRow>
                             <DataTableColumnHeader fixed top="0">
