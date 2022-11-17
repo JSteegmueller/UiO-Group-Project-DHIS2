@@ -16,7 +16,6 @@ import {
   ModalContent,
   ModalActions,
   ButtonStrip,
-  AlertBar,
 } from "@dhis2/ui";
 
 const date = new Date();
@@ -81,7 +80,6 @@ export function Commodities({ data, refetch, refreshComponent }) {
   const [mutate] = useDataMutation(dataMutationQuery);
   const [mutateRestocks] = useDataMutation(updateTransactionsMutation);
   const [hideModal, setHideModal] = useState(true);
-  const [hideAlert, setHideAlert] = useState(true);
 
   const handleConfirmClick = async () => {
     const storage = data.storage;
@@ -98,7 +96,6 @@ export function Commodities({ data, refetch, refreshComponent }) {
         });
       });
       storage.push(restock);
-      setHideAlert(false);
       await mutateRestocks({ restock: storage });
       refetch();
       refreshComponent();
@@ -271,7 +268,7 @@ export function Commodities({ data, refetch, refreshComponent }) {
           value="default"
           disabled={allSelected.length === data.dataSets.dataSetElements.length}
         >
-          Add All
+          Select all
         </Button>
       </div>
       <h3>Last restocked commodities</h3>
@@ -301,10 +298,6 @@ export function Commodities({ data, refetch, refreshComponent }) {
         </TableBody>
       </Table>
       <br></br>
-
-      <AlertBar success hidden={hideAlert} duration={8000}>
-        Successfully restocked commodities.
-      </AlertBar>
     </div>
   );
 }
