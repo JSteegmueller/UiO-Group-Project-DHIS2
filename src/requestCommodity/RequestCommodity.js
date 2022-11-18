@@ -91,7 +91,7 @@ function RequestCommodity(props) {
         let organisationData = collectingOrgDataHelper(data).organisationData;
 
         return (
-            <div>
+            <div className="overflow-scroll-table">
                 <Button
                     name="BackButton"
                     onClick={() => props.activePageHandler(props.commodityValue.sendBy)}

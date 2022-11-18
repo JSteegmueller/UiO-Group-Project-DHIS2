@@ -39,7 +39,10 @@ function Navigation(props) {
             <MenuItem
                 label="Recount"
                 active={props.activePage === "Recount"}
-                onClick={() => props.activePageHandler("Recount")}
+                onClick={() => {                    
+                    props.activeMobile();
+                    props.activePageHandler("Recount")
+                    }}
             />
         </Menu>
     );

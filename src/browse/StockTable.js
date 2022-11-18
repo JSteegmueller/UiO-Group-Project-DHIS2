@@ -53,6 +53,7 @@ function StockTable({ data, period, requestHandler }) {
     return (
         <div>
             <SearchBar fullTable={fullTable} setTableData={setTableData} />
+            <div className="overflow-scroll-table">
             <DataTable>
                 <TableHead>
                     <DataTableRow>
@@ -105,6 +106,7 @@ function StockTable({ data, period, requestHandler }) {
                     })}
                 </TableBody>
             </DataTable>
+            </div>
         </div>
     );
 }

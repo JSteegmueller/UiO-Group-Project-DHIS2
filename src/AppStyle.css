@@ -5,13 +5,24 @@
   body {
     overflow: hidden;
   }
-  .App_right__Ucnue {
+  .jsx-1964929281 {
+    position: relative;
+  }
+  .jsx-1964929281 > div {
+    overflow: hidden;
+    position: relative;
+  }
+  .container-right-side {
     padding-top: 30px;
+    max-width: 100%;
+  }
+  .overflow-scroll-table{
+    overflow: auto;
   }
   .mobileMenu {
     display: inline;
     z-index: 101;
-    position: absolute;
+    position: fixed;
     left: auto;
     right: 1rem;
     top: calc(48px + 1rem);
