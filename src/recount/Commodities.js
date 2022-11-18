@@ -193,7 +193,7 @@ export function Commodities({ data, refetch, refreshComponent }) {
           <TableRowHead>
             <TableCellHead>Commodity</TableCellHead>
             <TableCellHead>Current stock</TableCellHead>
-            <TableCellHead>Restock amount</TableCellHead>
+            <TableCellHead>Counted stock</TableCellHead>
             <TableCellHead></TableCellHead>
           </TableRowHead>
         </TableHead>
