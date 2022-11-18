@@ -1,16 +1,15 @@
 import React from "react";
-import { requestRestock } from "../Requests";
-import { nextRestock } from "../../browse/helper/getDates";
+import { requestRestock } from "../helper/requests";
+import { getNextRestock } from "../helper/getDates";
 import { useDataQuery } from "@dhis2/app-runtime";
 import {
-    CircularLoader,
-    Table,
+    DataTable,
     TableBody,
-    TableCell,
-    TableCellHead,
+    DataTableCell,
+    DataTableColumnHeader,
     TableHead,
-    TableRow,
-    TableRowHead,
+    DataTableRow,
+    CircularLoader,
 } from "@dhis2/ui";
 
 function Restock({ settings }) {
@@ -30,31 +29,36 @@ function Restock({ settings }) {
         return (
             <div>
                 <p>
-                    Last restock: {date.toLocaleDateString("en-GB")}{" "}
+                    Last restock: {date.toLocaleDateString("en-GB")}
+                    {" - "}
                     {date.toLocaleTimeString(timeFormat, {
                         hour: "2-digit",
                         minute: "2-digit",
                     })}
                 </p>
-                <p>Days until next restock: {nextRestock}</p>
-                <Table>
+                <p>Days until next restock: {getNextRestock()}</p>
+                <DataTable scrollHeight="350px">
                     <TableHead>
-                        <TableRowHead>
-                            <TableCellHead>Commodity</TableCellHead>
-                            <TableCellHead>Amount restocked</TableCellHead>
-                        </TableRowHead>
+                        <DataTableRow>
+                            <DataTableColumnHeader fixed top="0">
+                                Commodity
+                            </DataTableColumnHeader>
+                            <DataTableColumnHeader fixed top="0">
+                                Amount restocked
+                            </DataTableColumnHeader>
+                        </DataTableRow>
                     </TableHead>
                     <TableBody>
                         {slicedTransactions.map(([id, value, _]) => {
                             return (
-                                <TableRow key={id}>
-                                    <TableCell dense>{id}</TableCell>
-                                    <TableCell dense>{value}</TableCell>
-                                </TableRow>
+                                <DataTableRow key={id}>
+                                    <DataTableCell dense>{id}</DataTableCell>
+                                    <DataTableCell dense>{value}</DataTableCell>
+                                </DataTableRow>
                             );
                         })}
                     </TableBody>
-                </Table>
+                </DataTable>
             </div>
         );
     }

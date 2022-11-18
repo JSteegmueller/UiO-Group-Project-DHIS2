@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import StockTable from "./StockTable";
-import { date, nextRestock, currentPeriod } from "./helper/getDates";
+import { date, currentPeriod, getNextRestock } from "./helper/getDates";
 import { request, mutateBalance, mutateLastUpdated } from "./helper/requests";
 import { useDataQuery, useDataMutation } from "@dhis2/app-runtime";
 import { CircularLoader, AlertBar } from "@dhis2/ui";
@@ -45,7 +45,7 @@ function Stock({ requestHandler }) {
                         <p>Organization: {data.organization.displayName}</p>
                     </div>
                     <div className="userCard">
-                        <p>Days until next restock: {nextRestock}</p>
+                        <p>Days until next restock: {getNextRestock()}</p>
                         <p>Current Date: {date.toLocaleDateString("en-GB")}</p>
                     </div>
                 </div>

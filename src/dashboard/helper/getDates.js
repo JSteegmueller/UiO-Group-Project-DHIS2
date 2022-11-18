@@ -1,11 +1,6 @@
-const pDate = new Date();
-pDate.setDate(0);
-
 export const date = new Date();
 
 export const currentPeriod = getPeriod(date);
-
-export const previousPeriod = getPeriod(pDate);
 
 function getPeriod(date) {
     return date.getFullYear().toString() + ("0" + (date.getMonth() + 1)).slice(-2);

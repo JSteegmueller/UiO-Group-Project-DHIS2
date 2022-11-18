@@ -1,4 +1,4 @@
-import { currentPeriod } from "../browse/helper/getDates";
+import { currentPeriod } from "./getDates";
 
 export const period = currentPeriod;
 

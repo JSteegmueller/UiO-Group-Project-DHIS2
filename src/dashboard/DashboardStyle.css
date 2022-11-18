@@ -1,78 +1,94 @@
 .dashboard {
-  display: grid;
-  grid-template-rows: repeat(2, 1fr);
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 1rem;
-  margin-bottom: 1em;
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 1rem;
+    margin-bottom: 1em;
 }
-.dashboard-outer-h1{
- margin-bottom: 0;
+.dashboard-outer-h1 {
+    margin-bottom: 0;
 }
 
 .dashboard-select {
-  display: flex;
-  margin-bottom: 1em;
+    display: flex;
+    margin-bottom: 1em;
 }
 
 .inner-selection-button {
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 100%;
-  margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 100%;
+    margin-top: 1rem;
 }
 
 .card-settings {
-  display: flex;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 18px;
 }
+
+.card-user {
+    margin-top: 3.5rem;
+    margin-left: 2rem;
+    margin-bottom: 4rem;
+}
+
+.card-clock {
+    margin-top: 6.5rem;
+    margin-bottom: 6.5rem;
+}
+
+.stock-lowamount {
+    width: 120px;
+}
+
 .card-box-inner {
-  padding: 1rem;
-  overflow: hidden;
+    padding: 1rem;
+    overflow: hidden;
 }
+
 .card-box-inner h1,
 .card-box-inner h2,
 .card-box-inner h3 {
-  margin: 0rem;
-  display: inline;
+    margin: 0rem;
+    display: inline;
 }
+
 .switchButton {
-  justify-content: center !important;
-  margin-top: 1rem !important;
+    justify-content: center !important;
+    margin-top: 1rem !important;
 }
 
 .card-box h3 {
-  color: rgb(13, 71, 161);
+    color: rgb(13, 71, 161);
 }
 
 .headline-section {
-  justify-content: space-between;
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.card-settings {
-  justify-content: space-between;
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 
 @media (max-width: 1395px) {
-  .dashboard {
-    grid-template-rows: repeat(3, 1fr);
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .App_right__Ucnue {
-    max-width: 100%;
-  }
+    .dashboard {
+        grid-template-rows: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .App_right__Ucnue {
+        max-width: 100%;
+    }
 }
 
 @media (max-width: 920px) {
-  .dashboard {
-    grid-template-rows: repeat(4, 1fr);
-    grid-template-columns: repeat(1, 1fr);
-  }
+    .dashboard {
+        grid-template-rows: repeat(4, 1fr);
+        grid-template-columns: repeat(1, 1fr);
+    }
 }
 
 @media (max-width: 480px) {
-  .inner-selection-button .box >* {
-    margin-top: 10px
-  }
+    .inner-selection-button .box > * {
+        margin-top: 10px;
+    }
 }

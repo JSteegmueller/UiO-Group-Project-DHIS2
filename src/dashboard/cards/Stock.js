@@ -1,6 +1,6 @@
 import React from "react";
-import { requestStock, period } from "../Requests";
-import { mergeData } from "../../browse/helper/mergeData";
+import { requestStock, period } from "../helper/requests";
+import { mergeData } from "../helper/mergeData";
 import { useDataQuery } from "@dhis2/app-runtime";
 import {
     DataTable,
@@ -36,8 +36,9 @@ function Stock({ settings, saveSettings, requestHandler }) {
         return (
             <div>
                 <div className="card-settings">
-                    <p>Low on stock</p>
+                    <p>Stock lower than: </p>
                     <Input
+                        className="stock-lowamount"
                         min="0"
                         step="5"
                         type="number"
