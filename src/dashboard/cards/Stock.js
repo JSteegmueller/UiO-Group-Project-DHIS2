@@ -47,6 +47,7 @@ function Stock({ settings, saveSettings, requestHandler }) {
                         onChange={onChange}
                     />
                 </div>
+                <div className="overflow-scroll-table">
                 <DataTable scrollHeight="260px">
                     <TableHead>
                         <DataTableRow>
@@ -89,6 +90,7 @@ function Stock({ settings, saveSettings, requestHandler }) {
                         })}
                     </TableBody>
                 </DataTable>
+                </div>
             </div>
         );
     }

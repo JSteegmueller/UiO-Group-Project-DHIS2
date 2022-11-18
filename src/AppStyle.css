@@ -21,7 +21,7 @@
   .mobileMenu {
     display: inline;
     z-index: 101;
-    position: absolute;
+    position: fixed;
     left: auto;
     right: 1rem;
     top: calc(48px + 1rem);

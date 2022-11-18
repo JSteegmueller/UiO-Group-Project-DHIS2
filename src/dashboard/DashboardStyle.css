@@ -109,8 +109,3 @@
         margin-top: 10px;
     }
 }
-@media (max-width: 386px) {
-    .card-box-inner{
-        width: calc(100% - 1rem) !important;
-    }
-}
