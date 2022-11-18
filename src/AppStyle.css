@@ -5,8 +5,18 @@
   body {
     overflow: hidden;
   }
+  .jsx-1964929281 {
+    position: relative;
+  }
+  .App_container__8AHCF {
+    overflow: hidden;
+    position: relative;
+  }
   .App_right__Ucnue {
     padding-top: 30px;
+  }
+  .overflow-scroll-table{
+    overflow: auto;
   }
   .mobileMenu {
     display: inline;

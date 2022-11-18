@@ -6,19 +6,33 @@
     margin-bottom: 1em;
 }
 .dashboard-outer-h1 {
-    margin-bottom: 0;
+    margin: 0;
+}
+
+.dashboard-selection-outer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 
 .dashboard-select {
     display: flex;
-    margin-bottom: 1em;
+    align-items: center;
+    background: white;
+    border-radius: 3px;
+    padding: 1rem;
+    box-shadow: rgba(33, 41, 52, 0.06) 0px 1px 2px, rgba(33, 41, 52, 0.1) 0px 1px 3px;
 }
+.dashboard-select-description{
+    margin: 0px 10px 0px 0px;
+}
+
 
 .inner-selection-button {
     display: flex;
     flex-wrap: wrap;
     max-width: 100%;
-    margin-top: 1rem;
 }
 
 .card-settings {
@@ -78,6 +92,9 @@
     .App_right__Ucnue {
         max-width: 100%;
     }
+    .dashboard-selection-outer{
+        flex-direction: column;
+    }
 }
 
 @media (max-width: 920px) {
@@ -90,5 +107,10 @@
 @media (max-width: 480px) {
     .inner-selection-button .box > * {
         margin-top: 10px;
+    }
+}
+@media (max-width: 386px) {
+    .card-box-inner{
+        width: calc(100% - 1rem) !important;
     }
 }
