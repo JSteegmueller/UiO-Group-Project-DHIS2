@@ -261,14 +261,23 @@ export function Commodities({ data, refetch, refreshComponent }) {
                     Select all
                 </Button>
             </div>
-            <h3>Last recounted commodities</h3>
+            <h3>
+                Last recounted commodities{" "}
+                {new Date(data.storage[data.storage.length - page][0][3]).toLocaleDateString(
+                    "en-GB"
+                )}{" "}
+                -{" "}
+                {new Date(data.storage[data.storage.length - page][0][3]).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                })}
+            </h3>
             <Table>
                 <TableHead>
                     <TableRowHead>
                         <TableCellHead>Commodity</TableCellHead>
                         <TableCellHead>Previous stock</TableCellHead>
                         <TableCellHead>Updated stock</TableCellHead>
-                        <TableCellHead>Date</TableCellHead>
                     </TableRowHead>
                 </TableHead>
                 <TableBody>
@@ -278,9 +287,6 @@ export function Commodities({ data, refetch, refreshComponent }) {
                                 <TableCell>{commodity[0]}</TableCell>
                                 <TableCell>{commodity[1]}</TableCell>
                                 <TableCell>{commodity[2]}</TableCell>
-                                <TableCell>
-                                    {new Date(commodity[3]).toLocaleString("en-GB")}
-                                </TableCell>
                             </TableRow>
                         );
                     })}
