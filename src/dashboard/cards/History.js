@@ -27,7 +27,7 @@ function History({ settings }) {
             ? transactions.slice((page - 1) * pageSize, pageSize * page)
             : [];
         return (
-            <div>
+            <div className="overflow-scroll-table">
                 <DataTable scrollHeight="350px">
                     <TableHead>
                         <DataTableRow>

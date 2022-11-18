@@ -175,6 +175,7 @@ export function Commodities({ data, refetch, refreshComponent }) {
                     );
                 })}
             </SingleSelect>
+            <div className="overflow-scroll-table">
             <Table className={"tableStyleRestockRecount"}>
                 <TableHead>
                     <TableRowHead>
@@ -238,6 +239,7 @@ export function Commodities({ data, refetch, refreshComponent }) {
                     })}
                 </TableBody>
             </Table>
+            </div>
             <div className={"mainButtonRecountRestock"}>
                 <Button
                     name="confirm"

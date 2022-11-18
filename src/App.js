@@ -40,7 +40,7 @@ function MyApp() {
                     activeMobile={mobileMenu}
                 />
             </div>
-            <div className={classes.right}>
+            <div className={`container-right-side ${classes.right}`}>
                 {activePage === "Dashboard" && (
                     <Dashboard
                         activePageHandler={activePageHandler}
