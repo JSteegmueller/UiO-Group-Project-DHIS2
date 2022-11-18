@@ -7,7 +7,7 @@ import {
     CircularLoader,
     DataTableCell,
     DataTableColumnHeader,
-    DataTable
+    DataTable,
 } from "@dhis2/ui";
 
 const lifeCommodities = "ULowA8V3ucd";
@@ -52,8 +52,6 @@ function collectingDataHelper(valueOfStock, requestedCommodityId, organisationDa
                 (organisationName) => organisationName.orgUnitId === stocks.orgUnitId
             ),
         }));
-
-        return result;
     }
     return result;
 }
@@ -61,14 +59,14 @@ function collectingDataHelper(valueOfStock, requestedCommodityId, organisationDa
 // Sort data result and change sorting on click
 function sort(result, sortResult) {
     const sortedResult = result;
-    if (sortResult.sort === "stock" && sortResult.sortDirection) {
+    if (sortResult.sort === "stock") {
         sortedResult.sort((a, b) => b.stock - a.stock);
-    } else if (sortResult.sort === "stock" && !sortResult.sortDirection) {
-        sortedResult.sort((a, b) => a.stock - b.stock);
-    } else if (sortResult.sort === "organisation" && sortResult.sortDirection) {
+    }
+    if (sortResult.sort === "organisation") {
         sortedResult.sort((a, b) => a.orgUnitName.localeCompare(b.orgUnitName));
-    } else if (sortResult.sort === "organisation" && !sortResult.sortDirection) {
-        sortedResult.sort((a, b) => b.orgUnitName.localeCompare(a.orgUnitName));
+    }
+    if (!sortResult.sortDirection) {
+        sortedResult.reverse();
     }
     return sortedResult;
 }
@@ -77,7 +75,8 @@ function RequestCommodityTable({
     requestedCommodityId,
     organisationIds,
     organisationData,
-    period}) {
+    period,
+}) {
     const { loading, error, data } = useDataQuery(organisationUnitsValues, {
         variables: {
             orgId: organisationIds,
@@ -85,6 +84,8 @@ function RequestCommodityTable({
         },
     });
 
+    const [directionOrg, setDirectionOrg] = useState("default");
+    const [directionStock, setDirectionStock] = useState("asc");
     const [sortResult, setSortResult] = useState({
         sort: "stock",
         sortDirection: true,
@@ -92,24 +93,17 @@ function RequestCommodityTable({
 
     // Sort table on click according to ASC or DESC
     function onClickSorting(event) {
-        if (sortResult.sort === event.name) {
-            setSortResult({
-                sort: event.name,
-                sortDirection: !sortResult.sortDirection,
-            });
-        } else if (sortResult.sort !== event.name) {
-            if (sortResult.sortDirection) {
-                setSortResult({
-                    sort: event.name,
-                    sortDirection: !sortResult.sortDirection,
-                });
-            } else if (!sortResult.sortDirection) {
-                setSortResult({
-                    sort: event.name,
-                    sortDirection: sortResult.sortDirection,
-                });
-            }
-        }
+        const direction = sortResult.sort === event.name ? !sortResult.sortDirection : true;
+        setSortResult({
+            sort: event.name,
+            sortDirection: direction,
+        });
+        event.name === "stock"
+            ? setDirectionStock(direction ? "asc" : "desc")
+            : setDirectionStock("default");
+        event.name === "organisation"
+            ? setDirectionOrg(direction ? "asc" : "desc")
+            : setDirectionOrg("default");
     }
 
     if (error) {
@@ -136,7 +130,7 @@ function RequestCommodityTable({
                             <DataTableColumnHeader
                                 name="organisation"
                                 onSortIconClick={onClickSorting}
-                                sortDirection="default"
+                                sortDirection={directionOrg}
                                 sortIconTitle="Sort by organisation"
                             >
                                 Organisation
@@ -144,10 +138,10 @@ function RequestCommodityTable({
                             <DataTableColumnHeader
                                 name="stock"
                                 onSortIconClick={onClickSorting}
-                                sortDirection="default"
+                                sortDirection={directionStock}
                                 sortIconTitle="Sort by stock"
                             >
-                                Amount of avialable stock
+                                Amount of available stock
                             </DataTableColumnHeader>
                         </DataTableRow>
                     </TableHead>

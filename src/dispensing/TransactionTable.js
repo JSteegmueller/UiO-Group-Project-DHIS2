@@ -1,12 +1,19 @@
-import React from "react";
-import {Table, TableBody, TableCell, TableCellHead, TableHead, TableRow, TableRowHead} from "@dhis2/ui";
+import React, {useEffect, useState} from "react";
+import {Pagination, Table, TableBody, TableCell, TableCellHead, TableHead, TableRow, TableRowHead} from "@dhis2/ui";
 
 function TransactionTable({transactions}) {
     if (!transactions) {
         return null
     }
-    let slicedTransactions = transactions.slice(0, 10)
-    return <div>
+
+    const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState(5)
+    const [slicedTransactions, setSlicedTransactions] = useState([])
+    useEffect(() => {
+        setSlicedTransactions(transactions.slice((page - 1) * pageSize, pageSize * page))
+    }, [page, pageSize, transactions])
+
+    return <div className="tableDispensing">
         <Table>
             <TableHead>
                 <TableRowHead>
@@ -33,7 +40,16 @@ function TransactionTable({transactions}) {
                 }
             </TableBody>
         </Table>
+        <br/>
+        <Pagination
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+            page={page}
+            pageCount={Math.ceil(transactions.length / pageSize)}
+            pageSize={pageSize}
+            total={transactions.length}/>
     </div>
+
 }
 
 export default TransactionTable

@@ -1,0 +1,31 @@
+.mainDispensing{
+    display: grid;
+    /*grid-template-rows: repeat(2, 1fr);*/
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 1rem;
+}
+
+.button-dispensing{
+    margin-top: 1rem;
+}
+.button-dispensing button{
+    margin-right: 1rem;
+}
+.infobox-dispense {
+    margin-top: 1rem;
+}
+.infobox-dispense button{
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+
+@media (max-width: 920px) {
+    .mainDispensing{
+        grid-template-columns: repeat(1, 1fr);
+    }
+    .tableDispensing{
+        max-width: 100%;
+        overflow: auto;
+    }
+  }

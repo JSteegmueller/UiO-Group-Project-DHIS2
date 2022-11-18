@@ -1,140 +1,246 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import TransactionForm from "./TransactionForm";
+import { useDataMutation, useDataQuery } from "@dhis2/app-runtime";
+import {
+    createTransactionKeyMutation,
+    getTransactionsQuery,
+    updateTransactionsMutation,
+} from "./api/transactions";
+import {
+    getConsumptionQuery,
+    getEndBalanceQuery,
+    setConsumptionMutation,
+    setEndBalanceMutation,
+} from "./api/dataValues";
+import { getCurrentPeriod } from "./helper/HelperFunctions";
+import PendingTransactionTable from "./PendingTransactionTable";
+import { readTransactionsFromLocal, writeTransactionsToLocal } from "./helper/LocalStorage";
+import { TransactionStatus } from "./helper/Transaction";
 import TransactionTable from "./TransactionTable";
-import {useDataMutation, useDataQuery} from "@dhis2/app-runtime";
-import {createTransactionKeyMutation, getTransactionsQuery, updateTransactionsMutation} from "./api/transactions";
-import {getConsumptionQuery, getEndBalanceQuery, setConsumptionMutation, setEndBalanceMutation} from "./api/dataValues"
-import {getCurrentPeriod} from "./helper/HelperFunctions";
+import { Button } from "@dhis2/ui";
+import "./dispensingStyle.css";
 
-
-function Dispensing() {
+function Dispensing({ requestHandler }) {
     const onConsumptionQueryError = (error) => {
-        let {httpStatusCode} = error.details
+        let { httpStatusCode } = error.details;
         if (httpStatusCode !== 409) {
-            let message = `Error fetching consumption for commodity ${selectedCommodity.name} in period ${currentPeriod}`
-            alert(message)
-            setSubmitDisabled(true)
+            let message = `Error fetching consumption for commodity ${selectedCommodity.name} in period ${currentPeriod}`;
+            alert(message);
+            setSubmitDisabled(true);
         }
-        setCommodityConsumption(0)
-    }
+        setCommodityConsumption(0);
+    };
     const onConsumptionQuerySuccess = (data) => {
-        setCommodityConsumption(parseInt(data.consumption))
-    }
+        setCommodityConsumption(parseInt(data.consumption));
+    };
 
     const onBalanceQueryError = (error) => {
-        let {httpStatusCode} = error.details
+        let { httpStatusCode } = error.details;
         if (httpStatusCode === 409) {
-            let message = `No stock data for commodity ${selectedCommodity.name} in period ${currentPeriod}!`
-            alert(message)
+            let message = `No stock data for commodity ${selectedCommodity.name} in period ${currentPeriod}!`;
+            alert(message);
         } else {
-            let message = `Error fetching end balance for commodity ${selectedCommodity.name} in period ${currentPeriod}`
-            alert(message)
+            let message = `Error fetching end balance for commodity ${selectedCommodity.name} in period ${currentPeriod}`;
+            alert(message);
         }
-        setSubmitDisabled(true)
-    }
+        setSubmitDisabled(true);
+    };
     const onBalanceQuerySuccess = (data) => {
-        setCommodityEndBalance(parseInt(data.endBalance))
-    }
+        setCommodityEndBalance(parseInt(data.endBalance));
+    };
 
+    const transactionQuery = useDataQuery(getTransactionsQuery);
+    const endBalanceQuery = useDataQuery(getEndBalanceQuery, {
+        onComplete: onBalanceQuerySuccess,
+        onError: onBalanceQueryError,
+        lazy: true,
+    });
+    const consumptionQuery = useDataQuery(getConsumptionQuery, {
+        onComplete: onConsumptionQuerySuccess,
+        onError: onConsumptionQueryError,
+        lazy: true,
+    });
 
-    const transactionQuery = useDataQuery(getTransactionsQuery)
-    const endBalanceQuery = useDataQuery(getEndBalanceQuery,
-        {
-            onComplete: onBalanceQuerySuccess,
-            onError: onBalanceQueryError,
-            lazy: true
-        })
-    const consumptionQuery = useDataQuery(getConsumptionQuery,
-        {
-            onComplete: onConsumptionQuerySuccess,
-            onError: onConsumptionQueryError,
-            lazy: true
-        })
+    const [createTransactionKey, {}] = useDataMutation(createTransactionKeyMutation);
+    const [updateTransactions, {}] = useDataMutation(updateTransactionsMutation);
+    const [setEndBalance, {}] = useDataMutation(setEndBalanceMutation);
+    const [setConsumption, {}] = useDataMutation(setConsumptionMutation);
 
-    const [createTransactionKey, {}] = useDataMutation(createTransactionKeyMutation)
-    const [updateTransactions, {}] = useDataMutation(updateTransactionsMutation)
-    const [setEndBalance, {}] = useDataMutation(setEndBalanceMutation)
-    const [setConsumption, {}] = useDataMutation(setConsumptionMutation)
-
-    const [commodityEndBalance, setCommodityEndBalance] = useState(null)
-    const [commodityConsumption, setCommodityConsumption] = useState(null)
-    const [selectedCommodity, setSelectedCommodity] = useState(null)
-    const [submitDisabled, setSubmitDisabled] = useState(false)
-    const [currentPeriod, setCurrentPeriod] = useState(getCurrentPeriod())
+    const [commodityEndBalance, setCommodityEndBalance] = useState(null);
+    const [commodityConsumption, setCommodityConsumption] = useState(null);
+    const [selectedCommodity, setSelectedCommodity] = useState(null);
+    const [submitDisabled, setSubmitDisabled] = useState(false);
+    const [pendingTransactions, setPendingTransactions] = useState(readTransactionsFromLocal());
+    const currentPeriod = getCurrentPeriod();
 
     useEffect(() => {
-        if (!selectedCommodity) return
-        endBalanceQuery.refetch({commodity: selectedCommodity.id, period: currentPeriod})
-        consumptionQuery.refetch({commodity: selectedCommodity.id, period: currentPeriod})
-        setSubmitDisabled(false)
-    }, [selectedCommodity])
-
+        if (!selectedCommodity) return;
+        endBalanceQuery.refetch({
+            commodity: selectedCommodity.id,
+            period: currentPeriod,
+        });
+        consumptionQuery.refetch({
+            commodity: selectedCommodity.id,
+            period: currentPeriod,
+        });
+        setSubmitDisabled(false);
+    }, [selectedCommodity]);
 
     const submitTransaction = async (transaction) => {
-        setSubmitDisabled(true)
         try {
-            await submitToDataValueSet(transaction)
+            await submitToDataValueSet(transaction);
             await submitToDataStore(transaction);
-            await transactionQuery.refetch()
         } catch (e) {
-            setSubmitDisabled(false)
-            throw e
+            setSubmitDisabled(false);
+            throw e;
         }
-        let selected = selectedCommodity
-        setSelectedCommodity(null)
-        setSelectedCommodity(selected)
-        setSubmitDisabled(false)
-    }
+    };
+
+    const addTransactionToPending = (transaction) => {
+        const pending = Array.from(pendingTransactions);
+        const existingTransactionIndex = pending.findIndex(
+            (t) => t.commodity.id === transaction.commodity.id
+        );
+        if (existingTransactionIndex > -1) {
+            pending[existingTransactionIndex] = transaction;
+        } else {
+            pending.push(transaction);
+        }
+        writeTransactionsToLocal(pending);
+        setPendingTransactions(pending);
+    };
+
+    const removeTransactionFromPending = (index) => {
+        const pending = Array.from(pendingTransactions);
+        pending.splice(index, 1);
+        writeTransactionsToLocal(pending);
+        setPendingTransactions(pending);
+    };
+
+    const checkAvailability = (transaction) => {
+        let endBalance = transaction.endBalance;
+        endBalance -= transaction.amount;
+        if (endBalance < 0) {
+            let message = `Not enough stock for ${transaction.commodity.name} in period ${currentPeriod}!`;
+            throw new Error(message);
+        }
+    };
+
+    const submitTransactions = async () => {
+        setSubmitDisabled(true);
+        let date = Date.now();
+        for (const transaction of pendingTransactions) {
+            transaction.date = date;
+            transaction.status = TransactionStatus.submitting;
+            await submitTransaction(transaction);
+            transaction.status = TransactionStatus.submitted;
+        }
+        setTimeout(clearTransactions, 2000);
+        refetchSelectedCommodity();
+        await transactionQuery.refetch();
+    };
+
+    const clearTransactions = () => {
+        setPendingTransactions([]);
+        writeTransactionsToLocal([]);
+    };
+
+    const refetchSelectedCommodity = () => {
+        let selected = selectedCommodity;
+        setSelectedCommodity(null);
+        setSelectedCommodity(selected);
+    };
+
+    const addTransaction = async (transaction) => {
+        setSubmitDisabled(true);
+        transaction.endBalance = commodityEndBalance;
+        transaction.consumption = commodityConsumption;
+        checkAvailability(transaction);
+        addTransactionToPending(transaction);
+        refetchSelectedCommodity();
+        setSubmitDisabled(false);
+    };
 
     const submitToDataValueSet = async (transaction) => {
-        let {commodity, amount} = transaction
-        await submitEndBalance(commodity, amount)
-        await submitConsumption(commodity, amount)
-    }
+        await submitEndBalance(transaction);
+        await submitConsumption(transaction);
+    };
 
-    const submitEndBalance = async (commodity, amount) => {
-        console.log("Submitting end balance")
-        let endBalance = commodityEndBalance
-        endBalance -= amount
-        if (endBalance < 0) {
-            let message = `Not enough stock for ${commodity.name} in period ${currentPeriod}!`
-            alert(message)
-            throw new Error(message)
-        }
-        await setEndBalance({period: currentPeriod, commodity: commodity.id, value: endBalance})
-    }
+    const submitEndBalance = async (transaction) => {
+        let endBalance = transaction.endBalance;
+        endBalance -= transaction.amount;
+        await setEndBalance({
+            period: currentPeriod,
+            commodity: transaction.commodity.id,
+            value: endBalance,
+        });
+    };
 
-    const submitConsumption = async (commodity, amount) => {
-        console.log("Submitting consumption")
-        let consumption = commodityConsumption
-        consumption += amount
-        await setConsumption({period: currentPeriod, commodity: commodity.id, value: consumption})
-    }
-    
+    const submitConsumption = async (transaction) => {
+        let consumption = transaction.consumption;
+        consumption += transaction.amount;
+        await setConsumption({
+            period: currentPeriod,
+            commodity: transaction.commodity.id,
+            value: consumption,
+        });
+    };
+
     const submitToDataStore = async (transaction) => {
         if (transactionQuery.data) {
-            let {transactions} = transactionQuery.data
-            transactions.unshift(transaction)
-            await updateTransactions({transactions})
+            let { transactions } = transactionQuery.data;
+            transactions.unshift(transaction);
+            await updateTransactions({ transactions });
         } else {
-            await createTransactionKey({transaction})
+            await createTransactionKey({ transaction });
         }
-    }
+    };
 
     return (
         <div>
-            <TransactionForm submit={submitTransaction}
-                             amountLeft={commodityEndBalance}
-                             commodityChanged={setSelectedCommodity}
-                             disabled={submitDisabled}/>
-            <br/>
-            <TransactionTable
-                transactions={transactionQuery.data?.transactions}/>
-            <br/>
+            <h1>Dispensing</h1>
+            <div className={"mainDispensing"}>
+                <TransactionForm
+                    addTransaction={addTransaction}
+                    amountLeft={commodityEndBalance}
+                    commodityChanged={setSelectedCommodity}
+                    requestHandler={requestHandler}
+                    transactionCount={pendingTransactions.length}
+                />
+                <div>
+                    <PendingTransactionTable
+                        pendingTransactions={pendingTransactions}
+                        onDelete={removeTransactionFromPending}
+                    />
+                    {pendingTransactions.length > 0 && (
+                        <div className={"button-dispensing"}>
+                            <Button
+                                disabled={submitDisabled}
+                                type="button"
+                                primary
+                                onClick={submitTransactions}
+                            >
+                                Submit Transaction
+                            </Button>
+                            <Button
+                                disabled={submitDisabled}
+                                type="button"
+                                primary
+                                onClick={clearTransactions}
+                            >
+                                Cancel Transaction
+                            </Button>
+                        </div>
+                    )}
+                </div>
+            </div>
+            <br />
+            <div>
+                <TransactionTable transactions={transactionQuery.data?.transactions} />
+            </div>
+            <br />
         </div>
-
     );
-
 }
 
 export default Dispensing;
