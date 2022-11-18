@@ -154,8 +154,6 @@ commodity page once open.
   integrate the transaction history into the DHIS2 system with use of dataValueSets and dataValues instead of the
   dataStore.
 
-- The recount and restock is missing a paging functionality for the history of recounts and restocks.
-
 - For the restock and recount functionalities, edge cases such as uninitialized data in the storage have not been fully
   tested, due to the back-end servers being down during the last few days leading up to the deadline.
 
