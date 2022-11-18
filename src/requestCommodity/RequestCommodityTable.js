@@ -7,7 +7,7 @@ import {
     CircularLoader,
     DataTableCell,
     DataTableColumnHeader,
-    DataTable
+    DataTable,
 } from "@dhis2/ui";
 
 const lifeCommodities = "ULowA8V3ucd";
@@ -75,7 +75,8 @@ function RequestCommodityTable({
     requestedCommodityId,
     organisationIds,
     organisationData,
-    period}) {
+    period,
+}) {
     const { loading, error, data } = useDataQuery(organisationUnitsValues, {
         variables: {
             orgId: organisationIds,
@@ -140,7 +141,7 @@ function RequestCommodityTable({
                                 sortDirection={directionStock}
                                 sortIconTitle="Sort by stock"
                             >
-                                Amount of avialable stock
+                                Amount of available stock
                             </DataTableColumnHeader>
                         </DataTableRow>
                     </TableHead>

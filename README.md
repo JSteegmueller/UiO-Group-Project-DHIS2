@@ -4,10 +4,10 @@
 
 Group members:
 
-* Janik Steegmüller
-* Naomi Schoppa
-* Kevin Zhu
-* Linda Granholm
+-   Janik Steegmüller
+-   Naomi Schoppa
+-   Kevin Zhu
+-   Linda Granholm
 
 ## Setup
 
@@ -140,21 +140,18 @@ commodity page once open.
 
 ## Missing functionality and weaknesses
 
-- The data fetched on the dashboard does not get passed to other components. So the app refetches relevant data every
-  time
-  the user clicks on a shortcut. We could have used, e. g., a react context for saving request data. But due to the
-  limited time and complexity we decided against it.
+-   The data fetched on the dashboard does not get passed to other components. So the app refetches relevant data every
+    time
+    the user clicks on a shortcut. We could have used, e. g., a react context for saving request data. But due to the
+    limited time and complexity we decided against it.
 
-- Requests from the API could have been made less redundant between the various components of the application by storing
-  them locally at the beginning.
+-   Requests from the API could have been made less redundant between the various components of the application by storing
+    them locally at the beginning.
 
-- For adding a new transaction to the history, the app is pulling all previous transactions from the dataStore,
-  appending
-  the new transaction and pushing it back. For small scale this solution is sufficient, but a better way would be to
-  integrate the transaction history into the DHIS2 system with use of dataValueSets and dataValues instead of the
-  dataStore.
+-   For adding a new transaction to the history, the app is pulling all previous transactions from the dataStore,
+    appending the new transaction and pushing it back. For small scale this solution is sufficient, but a better way would be to
+    integrate the transaction history into the DHIS2 system with use of dataValueSets and dataValues instead of the
+    dataStore.
 
-- For the restock and recount functionalities, edge cases such as uninitialized data in the storage have not been fully
-  tested, due to the back-end servers being down during the last few days leading up to the deadline.
-
-
+-   For the restock and recount functionalities, edge cases such as uninitialized data in the storage have not been fully
+    tested, due to the back-end servers being down during the last few days leading up to the deadline.

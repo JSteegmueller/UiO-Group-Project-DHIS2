@@ -44,10 +44,10 @@ function Recount({ settings }) {
                                 Commodity
                             </DataTableColumnHeader>
                             <DataTableColumnHeader fixed top="0">
-                                Original balance
+                                Previous stock
                             </DataTableColumnHeader>
                             <DataTableColumnHeader fixed top="0">
-                                After recount
+                                Updated stock
                             </DataTableColumnHeader>
                         </DataTableRow>
                     </TableHead>

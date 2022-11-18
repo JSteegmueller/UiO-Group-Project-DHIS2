@@ -44,7 +44,7 @@ function Restock({ settings }) {
                                 Commodity
                             </DataTableColumnHeader>
                             <DataTableColumnHeader fixed top="0">
-                                Amount restocked
+                                Restock amount
                             </DataTableColumnHeader>
                         </DataTableRow>
                     </TableHead>

@@ -12,14 +12,13 @@ import {
     setConsumptionMutation,
     setEndBalanceMutation,
 } from "./api/dataValues";
-import {getCurrentPeriod} from "./helper/HelperFunctions";
+import { getCurrentPeriod } from "./helper/HelperFunctions";
 import PendingTransactionTable from "./PendingTransactionTable";
-import {readTransactionsFromLocal, writeTransactionsToLocal} from "./helper/LocalStorage";
-import {TransactionStatus} from "./helper/Transaction";
+import { readTransactionsFromLocal, writeTransactionsToLocal } from "./helper/LocalStorage";
+import { TransactionStatus } from "./helper/Transaction";
 import TransactionTable from "./TransactionTable";
-import {Button} from "@dhis2/ui";
+import { Button } from "@dhis2/ui";
 import "./dispensingStyle.css";
-
 
 function Dispensing({ requestHandler }) {
     const onConsumptionQueryError = (error) => {
@@ -136,21 +135,21 @@ function Dispensing({ requestHandler }) {
             await submitTransaction(transaction);
             transaction.status = TransactionStatus.submitted;
         }
-        setTimeout(clearTransactions, 2000)
-        refetchSelectedCommodity()
+        setTimeout(clearTransactions, 2000);
+        refetchSelectedCommodity();
         await transactionQuery.refetch();
     };
 
     const clearTransactions = () => {
         setPendingTransactions([]);
-        writeTransactionsToLocal([])
-    }
+        writeTransactionsToLocal([]);
+    };
 
     const refetchSelectedCommodity = () => {
         let selected = selectedCommodity;
         setSelectedCommodity(null);
         setSelectedCommodity(selected);
-    }
+    };
 
     const addTransaction = async (transaction) => {
         setSubmitDisabled(true);
@@ -158,9 +157,9 @@ function Dispensing({ requestHandler }) {
         transaction.consumption = commodityConsumption;
         checkAvailability(transaction);
         addTransactionToPending(transaction);
-        refetchSelectedCommodity()
+        refetchSelectedCommodity();
         setSubmitDisabled(false);
-    }
+    };
 
     const submitToDataValueSet = async (transaction) => {
         await submitEndBalance(transaction);
@@ -168,7 +167,6 @@ function Dispensing({ requestHandler }) {
     };
 
     const submitEndBalance = async (transaction) => {
-        console.log("Submitting end balance");
         let endBalance = transaction.endBalance;
         endBalance -= transaction.amount;
         await setEndBalance({
@@ -179,7 +177,6 @@ function Dispensing({ requestHandler }) {
     };
 
     const submitConsumption = async (transaction) => {
-        console.log("Submitting consumption");
         let consumption = transaction.consumption;
         consumption += transaction.amount;
         await setConsumption({
@@ -201,8 +198,8 @@ function Dispensing({ requestHandler }) {
 
     return (
         <div>
-            <div className={"mainDispensing"}
-            >
+            <h1>Dispensing</h1>
+            <div className={"mainDispensing"}>
                 <TransactionForm
                     addTransaction={addTransaction}
                     amountLeft={commodityEndBalance}
@@ -215,8 +212,8 @@ function Dispensing({ requestHandler }) {
                         pendingTransactions={pendingTransactions}
                         onDelete={removeTransactionFromPending}
                     />
-                    {
-                        pendingTransactions.length > 0 && <div  className={"button-dispensing"}>
+                    {pendingTransactions.length > 0 && (
+                        <div className={"button-dispensing"}>
                             <Button
                                 disabled={submitDisabled}
                                 type="button"
@@ -233,14 +230,15 @@ function Dispensing({ requestHandler }) {
                             >
                                 Cancel Transaction
                             </Button>
-                        </div>}
+                        </div>
+                    )}
                 </div>
             </div>
-            <br/>
+            <br />
             <div>
-                <TransactionTable transactions={transactionQuery.data?.transactions}/>
+                <TransactionTable transactions={transactionQuery.data?.transactions} />
             </div>
-            <br/>
+            <br />
         </div>
     );
 }
